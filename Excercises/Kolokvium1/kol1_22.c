@@ -20,6 +20,18 @@ void pecatiFaktura(Narachka nc) {
     printf("Faktura za %s\n", nc.ime);
 
     for(int i = 0; i < nc.n; i++) {
+        for(int j = 0; j < nc.n - 1; j++) {
+            if(*nc.proizvodi[j].kod > *nc.proizvodi[j + 1].kod ||
+              (*nc.proizvodi[j].kod == *nc.proizvodi[j + 1].kod &&
+                nc.proizvodi[j].kod[1] > nc.proizvodi[j + 1].kod[1])) {
+                Proizvod temp = nc.proizvodi[j];
+                nc.proizvodi[j] = nc.proizvodi[j + 1];
+                nc.proizvodi[j + 1] = temp;
+            }
+        }
+    }
+
+    for(int i = 0; i < nc.n; i++) {
         if(nc.proizvodi_n[i] > nc.proizvodi[i].kolicina) {
             printf("Fakturata ne moze da se izgotvi");
             return;

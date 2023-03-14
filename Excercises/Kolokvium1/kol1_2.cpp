@@ -3,7 +3,7 @@
 #include <iostream>
 using namespace std;
 
-#define MAX 50
+#define MAX 25
 
 class List {
     int* niza;
