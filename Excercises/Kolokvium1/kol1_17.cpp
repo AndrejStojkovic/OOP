@@ -30,7 +30,6 @@ public:
     }
 
     OperativenSistem(const OperativenSistem& os) {
-
         this->ime = new char[strlen(os.ime) + 1];
         strcpy(this->ime, os.ime);
         this->verzija = os.verzija;
