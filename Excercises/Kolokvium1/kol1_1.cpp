@@ -7,60 +7,97 @@ using namespace std;
 enum tip { POP = 0, RAP = 1, ROK = 2 };
 
 class Pesna {
-    char ime[50];
-    int minuti;
-    enum tip tip;
+    char* name;
+    int minutes;
+    tip type;
 
 public:
-    Pesna() { }
-
-    Pesna(char *ime, int minuti, enum tip tip) {
-        strcpy(this->ime, ime);
-        this->minuti = minuti;
-        this->tip = tip;
+    Pesna() {
+        this->name = new char[2];
+        strcpy(this->name, " ");
+        this->minutes = 0;
+        this->type = POP;
     }
 
-    int getMinuti() { return minuti; }
-    enum tip getTip() { return tip; }
+    Pesna(char* name, int minutes, enum tip type) {
+        this->name = new char[strlen(name) + 1];
+        strcpy(this->name, name);
+        this->minutes = minutes;
+        this->type = type;
+    }
+
+    Pesna(const Pesna& other) {
+        this->name = new char[strlen(other.name) + 1];
+        strcpy(this->name, other.name);
+        this->minutes = other.minutes;
+        this->type = other.type;
+    }
+
+    Pesna& operator=(const Pesna& other) {
+        if(this == &other) return *this;
+
+        this->name = new char[strlen(other.name) + 1];
+        strcpy(this->name, other.name);
+        this->minutes = other.minutes;
+        this->type = other.type;
+
+        return *this;
+    }
+
+    char* getName() { return name; }
+    void setName(char* name) { strcpy(this->name, name); }
+
+    int getMinutes() { return minutes; }
+    void setMinutes(int minutes) { this->minutes = minutes; }
+
+    enum tip getType() { return type; }
+    void setType(enum tip type) { this->type = type; }
 
     void pecati() {
-        cout << "\"" << ime << "\"" << "-" << minuti << "min\n";
+        cout << "\"" << name << "\"" << "-" << minutes << "min\n";
     }
 
-    ~Pesna() { }
+    ~Pesna() {
+        delete [] name;
+    }
 };
 
 class CD {
     Pesna pesni[10];
-    int broj;
-    int vreme;
+    int num;
+    int length;
 
 public:
-    CD() { }
+    CD() {
+        this->num = 0;
+    }
 
     CD(int vreme) {
-        this->broj = 0;
-        this->vreme = vreme;
+        this->num = 0;
+        this->length = vreme;
     }
 
     Pesna getPesna(int idx) { return pesni[idx]; }
-    int getBroj() { return broj; }
-    int getVreme() { return vreme; }
+
+    int getNum() { return num; }
+    void setNum(int num) { this->num = num; }
+
+    int getLength() { return length; }
+    void setLength(int length) { this->length = length; }
 
     void dodadiPesna(Pesna p) {
-        int currMinuti = 0;
-        for(int i = 0; i < broj; i++) {
-            currMinuti += pesni[i].getMinuti();
-        }
+        int currMinutes = 0;
 
-        if(broj < 10 && currMinuti + p.getMinuti() <= vreme) {
-            pesni[broj++] = p;
+        for(int i = 0; i < num; i++) currMinutes += pesni[i].getMinutes();
+
+        if(num < 10 && currMinutes + p.getMinutes() <= length) {
+            pesni[num++] = p;
         }
     }
 
     void pecatiPesniPoTip(enum tip t) {
-        for(int i = 0; i < broj; i++) {
-            if(pesni[i].getTip() == (tip)t) {
+        for(int i = 0; i < num; i++) {
+            if(pesni[i].getType() == t) {
                 pesni[i].pecati();
             }
         }
@@ -109,7 +146,7 @@ int main() {
             Pesna p(ime,minuti,(tip)kojtip);
             omileno.dodadiPesna(p);
         }
-        for (int i=0; i<omileno.getBroj(); i++)
+        for (int i=0; i<omileno.getNum(); i++)
             (omileno.getPesna(i)).pecati();
     }
     else if(testCase == 4) {
