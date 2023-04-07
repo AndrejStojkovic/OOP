@@ -5,7 +5,6 @@
 using namespace std;
 
 enum Extension { pdf, txt, exe };
-
 char extensions[3][4] = {"pdf", "txt", "exe"};
 
 class File {
@@ -16,28 +15,28 @@ class File {
 
 public:
     File() {
-        this->name = new char[1];
-        this->owner = new char[1];
+        this->name = new char[2];
         strcpy(this->name, " ");
         ext = txt;
+        this->owner = new char[2];
         strcpy(this->owner, " ");
         size = 0;
     }
 
     File(const char* name, const char* owner, const int size, const Extension ext) {
         this->name = new char[strlen(name) + 1];
-        this->owner = new char[strlen(owner) + 1];
         strcpy(this->name, name);
         this->ext = ext;
+        this->owner = new char[strlen(owner) + 1];
         strcpy(this->owner, owner);
         this->size = size;
     }
 
     File(const File& copy) {
         this->name = new char[strlen(copy.name) + 1];
-        this->owner = new char[strlen(copy.owner) + 1];
         strcpy(this->name, copy.name);
         this->ext = copy.ext;
+        this->owner = new char[strlen(copy.owner) + 1];
         strcpy(this->owner, copy.owner);
         this->size = copy.size;
     }
@@ -46,9 +45,9 @@ public:
         if(this == &newFile) return *this;
 
         this->name = new char[strlen(newFile.name) + 1];
-        this->owner = new char[strlen(newFile.owner) + 1];
         strcpy(this->name, newFile.name);
         this->ext = newFile.ext;
+        this->owner = new char[strlen(newFile.owner) + 1];
         strcpy(this->owner, newFile.owner);
         this->size = newFile.size;
 
@@ -69,39 +68,23 @@ public:
         return strcmp(this->name, that.name) == 0 && this->ext == that.ext;
     }
 
-    char* getName() const {
-        return name;
-    }
-
+    char* getName() const { return name; }
     void setName(const char* name) {
         this->name = new char[strlen(name) + 1];
         strcpy(this->name, name);
     }
 
-    Extension getExtension() const {
-        return ext;
-    }
+    Extension getExtension() const { return ext; }
+    void setExtension(const Extension ext) { this->ext = ext; }
 
-    void setExtension(const Extension ext) {
-        this->ext = ext;
-    }
-
-    char* getOwner() const {
-        return owner;
-    }
-
+    char* getOwner() const { return owner; }
     void setOwner(const char* owner) {
         this->owner = new char[strlen(owner) + 1];
         strcpy(this->owner, owner);
     }
 
-    int getSize() const {
-        return size;
-    }
-
-    void setSize(const int size) {
-        this->size = size;
-    }
+    int getSize() const { return size; }
+    void setSize(const int size) { this->size = size; }
 
     ~File() {
         delete [] name;
@@ -136,30 +119,17 @@ public:
         this->num = num;
     }
 
-    char* getName() const {
-        return name;
-    }
-
+    char* getName() const { return name; }
     void setName(const char* name) {
         this->name = new char[strlen(name) + 1];
         strcpy(this->name, name);
     }
 
-    File* getFiles() const {
-        return files;
-    }
+    File* getFiles() const { return files; }
+    void setFiles(File* files) { this->files = files; }
 
-    void setFiles(File* files) {
-        this->files = files;
-    }
-
-    int getNum() const {
-        return num;
-    }
-
-    void setNum(const int num) {
-        this->num = num;
-    }
+    int getNum() const { return num; }
+    void setNum(const int num) { this->num = num; }
 
     void print() {
         cout << "Folder name: " << this->name << "\n";

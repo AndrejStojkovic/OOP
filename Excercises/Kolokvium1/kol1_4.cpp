@@ -4,8 +4,6 @@
 #include <cstring>
 using namespace std;
 
-#define MAX 20
-
 class Patnik {
     char ime[100];
     int klasa;
@@ -82,15 +80,14 @@ class Voz {
 public:
     Voz() {
         strcpy(this->destinacija, " ");
-        patnici = new Patnik[MAX];
-        num = 0;
-        velosipedi = 0;
+        patnici = new Patnik[0];
+        num = velosipedi = 0;
         mesto[0] = mesto[1] = 0;
     }
 
     Voz(char* destinacija, int velosipedi) {
         strcpy(this->destinacija, destinacija);
-        patnici = new Patnik[MAX];
+        patnici = new Patnik[0];
         num = 0;
         this->velosipedi = velosipedi;
         mesto[0] = mesto[1] = 0;
@@ -98,7 +95,8 @@ public:
 
     Voz(const Voz& v) {
         strcpy(this->destinacija, v.destinacija);
-        this->patnici = v.patnici;
+        this->patnici = new Patnik[v.num];
+        for(int i = 0; i < v.num; i++) this->patnici[i] = v.patnici[i];
         this->num = v.num;
         this->velosipedi = v.velosipedi;
         for(int i = 0; i < 2; i++) this->mesto[i] = v.mesto[i];
@@ -108,7 +106,8 @@ public:
         if(this == &other) return *this;
 
         strcpy(this->destinacija, other.destinacija);
-        this->patnici = other.patnici;
+        this->patnici = new Patnik[other.num];
+        for(int i = 0; i < other.num; i++) this->patnici[i] = other.patnici[i];
         this->num = other.num;
         this->velosipedi = other.velosipedi;
         for(int i = 0; i < 2; i++) this->mesto[i] = other.mesto[i];

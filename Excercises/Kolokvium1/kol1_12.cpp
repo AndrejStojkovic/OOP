@@ -50,39 +50,21 @@ public:
         return *this;
     }
 
-    char* getIme() {
-        return ime;
-    }
+    char* getIme() { return ime; }
+    void setIme(const char* ime) { strcpy(this->ime, ime); }
 
-    void setIme(const char* ime) {
-        strcpy(this->ime, ime);
-    }
+    int getCena() { return cena; }
+    void setCena(const int cena) { this->cena = cena; }
 
-    int getCena() {
-        return cena;
-    }
-
-    void setCena(const int cena) {
-        this->cena = cena;
-    }
-
-    char* getSostojki() {
-        return sostojki;
-    }
-
+    char* getSostojki() { return sostojki; }
     void setSostojki(const char* sostojki) {
         delete [] this->sostojki;
         this->sostojki = new char[strlen(sostojki) + 1];
         strcpy(this->sostojki, sostojki);
     }
 
-    int getNamaluvanje() {
-        return namaluvanje;
-    }
-
-    void setNamaluvanje(const int namaluvanje) {
-        this->namaluvanje = namaluvanje;
-    }
+    int getNamaluvanje() { return namaluvanje; }
+    void setNamaluvanje(const int namaluvanje) { this->namaluvanje = namaluvanje; }
 
     void pecati() {
         cout << ime << " - " << sostojki << ", " << cena;

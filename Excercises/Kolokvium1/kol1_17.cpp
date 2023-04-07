@@ -49,6 +49,21 @@ public:
         return *this;
     }
 
+    char* getIme() { return ime; }
+    void setIme(char* ime) {
+        this->ime = new char[strlen(ime) + 1];
+        strcpy(this->ime, ime);
+    }
+
+    float getVerzija() { return verzija; }
+    void setVerzija(float verzija) { this->verzija = verzija; }
+
+    enum Tip getTip() { return tip; }
+    void setTip(enum Tip Tip) { this->tip = tip; }
+
+    float getGolemina() { return golemina; }
+    void setGolemina(float golemina) { this->golemina = golemina; }
+
     void pecati() {
         cout << "Ime: " << ime << " Verzija: " << verzija << " Tip: " << tip << " Golemina:" << golemina << "GB" << "\n";
     }
@@ -110,6 +125,19 @@ public:
 
         return *this;
     }
+
+    char* getIme() { return ime; }
+    void setIme(char* ime) { strcpy(this->ime, ime); }
+
+    OperativenSistem* getOS() { return os; }
+    void setOS(OperativenSistem* os, int n) {
+        delete [] os;
+        this->os = new OperativenSistem[n];
+        for(int i = 0; i < n; i++) this->os[i] = os[i];
+    }
+
+    int getNum() { return os_n; }
+    void setNum(int os_n) { this->os_n = os_n; }
 
     void pecatiOperativniSistemi() {
         cout << "Repozitorium: " << ime << "\n";

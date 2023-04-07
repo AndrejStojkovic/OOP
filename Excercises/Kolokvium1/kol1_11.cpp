@@ -4,8 +4,6 @@
 #include <cstring>
 using namespace std;
 
-#define MAX 100
-
 class Ucesnik {
     char* ime;
     bool pol;
@@ -13,20 +11,21 @@ class Ucesnik {
 
 public:
     Ucesnik() {
-        this->ime = new char[100];
+        this->ime = new char[0];
         strcpy(this->ime, " ");
         this->pol = false;
         this->vozrast = 0;
     }
 
     Ucesnik(char* ime, bool pol, int vozrast) {
-        this->ime = new char[100];
+        this->ime = new char[strlen(ime) + 1];
         strcpy(this->ime, ime);
         this->pol = pol;
         this->vozrast = vozrast;
     }
 
     Ucesnik(const Ucesnik& other) {
+        this->ime = new char[strlen(other.ime) + 1];
         strcpy(this->ime, other.ime);
         this->pol = other.pol;
         this->vozrast = other.vozrast;
@@ -35,6 +34,7 @@ public:
     Ucesnik& operator=(const Ucesnik& other) {
         if(this == &other) return *this;
 
+        this->ime = new char[strlen(other.ime) + 1];
         strcpy(this->ime, other.ime);
         this->pol = other.pol;
         this->vozrast = other.vozrast;
@@ -47,9 +47,7 @@ public:
     }
 
     friend ostream& operator<<(ostream& os, Ucesnik& other) {
-        os << other.ime << "\n";
-        os << (other.pol ? "mashki" : "zhenski") << "\n";
-        os << other.vozrast << "\n";
+        os << other.ime << "\n" << (other.pol ? "mashki" : "zhenski") << "\n" << other.vozrast << "\n";
         return os;
     }
 
@@ -90,19 +88,20 @@ class Maraton {
 public:
     Maraton() {
         strcpy(this->lokacija, " ");
-        ucesnici = new Ucesnik[MAX];
+        ucesnici = new Ucesnik[0];
         num = 0;
     }
 
     Maraton(char* lokacija) {
         strcpy(this->lokacija, " ");
-        ucesnici = new Ucesnik[MAX];
+        ucesnici = new Ucesnik[0];
         num = 0;
     }
 
     Maraton(const Maraton& other) {
         strcpy(this->lokacija, other.lokacija);
-        this->ucesnici = other.ucesnici;
+        this->ucesnici = new Ucesnik[other.num];
+        for(int i = 0; i < other.num; i++) this->ucesnici[i] = other.ucesnici[i];
         this->num = other.num;
     }
 
@@ -110,39 +109,34 @@ public:
         if(this == &other) return *this;
 
         strcpy(this->lokacija, other.lokacija);
-        this->ucesnici = other.ucesnici;
+        this->ucesnici = new Ucesnik[other.num];
+        for(int i = 0; i < other.num; i++) this->ucesnici[i] = other.ucesnici[i];
         this->num = other.num;
 
         return *this;
     }
 
     Maraton& operator+=(const Ucesnik& other) {
-        ucesnici[num++] = other;
+        Ucesnik* tmp = new Ucesnik[num + 1];
+        for(int i = 0; i < num; i++) tmp[i] = this->ucesnici[i];
+        tmp[num++] = other;
+
+        delete [] ucesnici;
+
+        this->ucesnici = new Ucesnik[num];
+        for(int i = 0; i < num; i++) this->ucesnici[i] = tmp[i];
+
+        return *this;
     }
 
-    char* getLokacija() {
-        return lokacija;
-    }
+    char* getLokacija() { return lokacija; }
+    void setLokacija(char* lokacija) { strcpy(this->lokacija, lokacija); }
 
-    void setLokacija(char* lokacija) {
-        strcpy(this->lokacija, lokacija);
-    }
+    Ucesnik* getUcesnici() { return ucesnici; }
+    void setUcesnici(Ucesnik* ucesnici) { this->ucesnici = ucesnici; }
 
-    Ucesnik* getUcesnici() {
-        return ucesnici;
-    }
-
-    void setUcesnici(Ucesnik* ucesnici) {
-        this->ucesnici = ucesnici;
-    }
-
-    int getNum() {
-        return num;
-    }
-
-    void setNum(int num) {
-        this->num = num;
-    }
+    int getNum() { return num; }
+    void setNum(int num) { this->num = num; }
 
     float prosecnoVozrast() {
         float s = 0;
