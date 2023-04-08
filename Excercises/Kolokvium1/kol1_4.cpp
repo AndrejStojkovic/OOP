@@ -75,14 +75,12 @@ class Voz {
     Patnik* patnici;
     int num;
     int velosipedi;
-    int mesto[2];
 
 public:
     Voz() {
         strcpy(this->destinacija, " ");
         patnici = new Patnik[0];
         num = velosipedi = 0;
-        mesto[0] = mesto[1] = 0;
     }
 
     Voz(char* destinacija, int velosipedi) {
@@ -90,7 +88,6 @@ public:
         patnici = new Patnik[0];
         num = 0;
         this->velosipedi = velosipedi;
-        mesto[0] = mesto[1] = 0;
     }
 
     Voz(const Voz& v) {
@@ -99,7 +96,6 @@ public:
         for(int i = 0; i < v.num; i++) this->patnici[i] = v.patnici[i];
         this->num = v.num;
         this->velosipedi = v.velosipedi;
-        for(int i = 0; i < 2; i++) this->mesto[i] = v.mesto[i];
     }
 
     Voz& operator=(const Voz& other) {
@@ -110,13 +106,22 @@ public:
         for(int i = 0; i < other.num; i++) this->patnici[i] = other.patnici[i];
         this->num = other.num;
         this->velosipedi = other.velosipedi;
-        for(int i = 0; i < 2; i++) this->mesto[i] = other.mesto[i];
 
         return *this;
     }
 
     Voz& operator+=(const Patnik& p) {
-        this->patnici[num++] = p;
+        if(p.getVelosiped() && !velosipedi) return *this;
+
+        Patnik* tmp = new Patnik[num + 1];
+        for(int i = 0; i < this->num; i++) tmp[i] = patnici[i];
+        tmp[this->num++] = p;
+
+        delete [] patnici;
+        this->patnici = new Patnik[num];
+        for(int i = 0; i < num; i++) patnici[i] = tmp[i];
+        delete [] tmp;
+
         return *this;
     }
 
@@ -129,26 +134,7 @@ public:
                     os << other.patnici[i];
                 }
             }
-
             return os;
-        }
-
-        for(int i = 0; i < other.num; i++) {
-            if(other.patnici[i].getVelosiped()) {
-                if(other.patnici[i].getKlasa() == 1) {
-                    if(other.velosipedi > 0) other.velosipedi--;
-                    else other.mesto[0]++;
-                }
-            }
-        }
-
-        for(int i = 0; i < other.num; i++) {
-            if(other.patnici[i].getVelosiped()) {
-                if(other.patnici[i].getKlasa() == 2) {
-                    if(other.velosipedi > 0) other.velosipedi--;
-                    else other.mesto[1]++;
-                }
-            }
         }
 
         for(int i = 0; i < other.num; i++) {
@@ -159,8 +145,23 @@ public:
     }
 
     void patniciNemaMesto() {
-        cout << "Brojot na patnici od 1-va klasa koi ostanale bez mesto e: " << mesto[0] << endl;
-        cout << "Brojot na patnici od 2-ra klasa koi ostanale bez mesto e: " << mesto[1] << endl;
+        int mesto1 = 0, mesto2 = 0, bc = velosipedi;
+        for(int i = 0; i < num; i++) {
+            if(patnici[i].getVelosiped() && patnici[i].getKlasa() == 1) {
+                if(bc) bc--;
+                else mesto1++;
+            }
+        }
+
+        for(int i = 0; i < num; i++) {
+            if(patnici[i].getVelosiped() && patnici[i].getKlasa() == 2) {
+                if(bc) bc--;
+                else mesto2++;
+            }
+        }
+
+        cout << "Brojot na patnici od 1-va klasa koi ostanale bez mesto e: " << mesto1 << "\n";
+        cout << "Brojot na patnici od 2-ra klasa koi ostanale bez mesto e: " << mesto2 << "\n";
     }
 
     ~Voz() {
