@@ -112,6 +112,7 @@ public:
 
         strcpy(this->name, that.name);
         this->id = that.id;
+        delete [] this->companies;
         this->companies = new StockRecord[that.len];
         for(int i = 0; i < that.len; i++)
             this->companies[i] = that.companies[i];

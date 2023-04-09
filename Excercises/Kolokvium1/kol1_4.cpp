@@ -102,6 +102,7 @@ public:
         if(this == &other) return *this;
 
         strcpy(this->destinacija, other.destinacija);
+        delete [] this->patnici;
         this->patnici = new Patnik[other.num];
         for(int i = 0; i < other.num; i++) this->patnici[i] = other.patnici[i];
         this->num = other.num;

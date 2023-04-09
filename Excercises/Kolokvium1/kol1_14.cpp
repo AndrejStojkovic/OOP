@@ -44,9 +44,11 @@ public:
     File& operator=(const File& newFile) {
         if(this == &newFile) return *this;
 
+        delete [] this->name;
         this->name = new char[strlen(newFile.name) + 1];
         strcpy(this->name, newFile.name);
         this->ext = newFile.ext;
+        delete [] this->owner;
         this->owner = new char[strlen(newFile.owner) + 1];
         strcpy(this->owner, newFile.owner);
         this->size = newFile.size;
@@ -117,6 +119,26 @@ public:
         strcpy(this->name, name);
         this->files = files;
         this->num = num;
+    }
+
+    Folder(const Folder& other) {
+        this->name = new char[strlen(other.name) + 1];
+        strcpy(this->name, other.name);
+        this->files = other.files;
+        this->num = other.num;
+    }
+
+    Folder& operator=(const Folder& other) {
+        if(this == &other) return *this;
+
+        delete [] this->name;
+        this->name = new char[strlen(other.name) + 1];
+        strcpy(this->name, other.name);
+        delete [] this->files;
+        this->files = other.files;
+        this->num = other.num;
+
+        return *this;
     }
 
     char* getName() const { return name; }

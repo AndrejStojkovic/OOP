@@ -34,6 +34,7 @@ public:
     Ucesnik& operator=(const Ucesnik& other) {
         if(this == &other) return *this;
 
+        delete [] this->ime;
         this->ime = new char[strlen(other.ime) + 1];
         strcpy(this->ime, other.ime);
         this->pol = other.pol;
@@ -109,6 +110,7 @@ public:
         if(this == &other) return *this;
 
         strcpy(this->lokacija, other.lokacija);
+        delete [] this->ucesnici;
         this->ucesnici = new Ucesnik[other.num];
         for(int i = 0; i < other.num; i++) this->ucesnici[i] = other.ucesnici[i];
         this->num = other.num;

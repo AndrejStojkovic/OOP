@@ -139,15 +139,31 @@ public:
             if(pici[i].istiSe(p)) flag = true;
         }
 
-        if(!flag) {
-            Pica* temp = new Pica[num + 1];
-            for(int i = 0; i < num; i++) temp[i] = pici[i];
-            temp[num++] = p;
-            delete [] this->pici;
-            this->pici = temp;
-        }
+        if(flag) return *this;
+
+        Pica* temp = new Pica[num + 1];
+        for(int i = 0; i < num; i++) temp[i] = pici[i];
+        temp[num++] = p;
+        delete [] this->pici;
+        this->pici = temp;
 
         return *this;
+    }
+
+    void dodadi(Pica &p) {
+        bool flag = false;
+
+        for(int i = 0; i < num; i++) {
+            if(pici[i].istiSe(p)) flag = true;
+        }
+
+        if(flag) return;
+
+        Pica* temp = new Pica[num + 1];
+        for(int i = 0; i < num; i++) temp[i] = pici[i];
+        temp[num++] = p;
+        delete [] this->pici;
+        this->pici = temp;
     }
 
     char* getIme() {

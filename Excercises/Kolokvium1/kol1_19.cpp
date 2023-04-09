@@ -38,6 +38,7 @@ public:
     IceCream& operator=(const IceCream& other) {
         if(this == &other) return *this;
 
+        delete [] this->name;
         this->name = new char[strlen(other.name) + 1];
         strcpy(this->name, other.name);
         strcpy(this->ingr, other.ingr);
@@ -124,7 +125,8 @@ public:
         if(this == &other) return *this;
 
         strcpy(this->name, other.name);
-        iceCreams = new IceCream[other.num];
+        delete [] this->iceCreams;
+        this->iceCreams = new IceCream[other.num];
         for(int i = 0; i < other.num; i++) this->iceCreams[i] = other.iceCreams[i];
         this->num = other.num;
 

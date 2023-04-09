@@ -102,6 +102,7 @@ public:
         strcpy(this->location, location);
         this->num = num;
         this->year = year;
+        delete [] this->guitars;
         this->guitars = new Gitara[num];
         for(int i = 0; i < num; i++) this->guitars[i] = guitars[i];
     }
@@ -170,9 +171,7 @@ public:
     void prodadi(Gitara p) {
         int el = 0, ct = 0;
 
-        for(int i = 0; i < num; i++) {
-            el += !guitars[i].daliIsti(p);
-        }
+        for(int i = 0; i < num; i++) el += !guitars[i].daliIsti(p);
 
         if(!el) return;
 
@@ -196,7 +195,6 @@ public:
         for(int i = 0; i < num; i++) {
             if(daliNovi && guitars[i].getYear() > year) {
                 guitars[i].pecati();
-                continue;
             } else if(!daliNovi) {
                 guitars[i].pecati();
             }

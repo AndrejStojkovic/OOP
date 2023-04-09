@@ -38,13 +38,14 @@ public:
     }
 
     OperativenSistem& operator=(const OperativenSistem& os) {
-        if(this != &os) {
-            this->ime = new char[strlen(os.ime) + 1];
-            strcpy(this->ime, os.ime);
-            this->verzija = os.verzija;
-            this->tip = os.tip;
-            this->golemina = os.golemina;
-        }
+        if(this == &os) return *this;
+
+        delete [] this->ime;
+        this->ime = new char[strlen(os.ime) + 1];
+        strcpy(this->ime, os.ime);
+        this->verzija = os.verzija;
+        this->tip = os.tip;
+        this->golemina = os.golemina;
 
         return *this;
     }
@@ -116,12 +117,13 @@ public:
     }
 
     Repozitorium& operator=(const Repozitorium& repo) {
-        if(this != &repo) {
-            strcpy(this->ime, repo.ime);
-            this->os = new OperativenSistem[repo.os_n];
-            this->os = repo.os;
-            this->os_n = repo.os_n;
-        }
+        if(this == &repo) return *this;
+
+        strcpy(this->ime, repo.ime);
+        delete [] this->os;
+        this->os = new OperativenSistem[repo.os_n];
+        this->os = repo.os;
+        this->os_n = repo.os_n;
 
         return *this;
     }

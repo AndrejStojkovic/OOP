@@ -36,6 +36,7 @@ public:
     Pesna& operator=(const Pesna& other) {
         if(this == &other) return *this;
 
+        delete [] this->name;
         this->name = new char[strlen(other.name) + 1];
         strcpy(this->name, other.name);
         this->minutes = other.minutes;
@@ -75,6 +76,22 @@ public:
     CD(int vreme) {
         this->num = 0;
         this->length = vreme;
+    }
+
+    CD(const CD& other) {
+        for(int i = 0; i< other.num; i++) this->pesni[i] = other.pesni[i];
+        this->num = other.num;
+        this->length = other.length;
+    }
+
+    CD& operator=(const CD& other) {
+        if(this == &other) return *this;
+
+        for(int i = 0; i< other.num; i++) this->pesni[i] = other.pesni[i];
+        this->num = other.num;
+        this->length = other.length;
+
+        return *this;
     }
 
     Pesna getPesna(int idx) { return pesni[idx]; }
