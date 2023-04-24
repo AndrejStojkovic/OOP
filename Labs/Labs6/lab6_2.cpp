@@ -1,6 +1,5 @@
 // 6 - 2
 
-// 2.
 #include <iostream>
 #include <cstring>
 using namespace std;
