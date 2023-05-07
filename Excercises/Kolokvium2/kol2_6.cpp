@@ -5,10 +5,7 @@
 using namespace std;
 
 class ExistingGame {
-public:
-    void message() {
-        cout << "The game is already in the collection\n";
-    }
+public: void message() { cout << "The game is already in the collection\n"; }
 };
 
 class Game {

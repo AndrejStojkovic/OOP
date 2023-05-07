@@ -15,7 +15,7 @@ class Trud {
     char type; // C - conference, J - magazine
     int year;
 
-    void copy(const Trud& other) {
+    void copy_trud(const Trud& other) {
         this->type = other.type;
         this->year = other.year;
     }
@@ -31,12 +31,12 @@ public:
     }
 
     Trud(const Trud& other) {
-        copy(other);
+        copy_trud(other);
     }
 
     Trud& operator=(const Trud& other) {
         if(this == &other) return *this;
-        copy(other);
+        copy_trud(other);
         return *this;
     }
 
@@ -62,7 +62,7 @@ protected:
     int* grades;
     int n;
 
-    void copy(const Student& other) {
+    void copy_student(const Student& other) {
         strcpy(this->name, other.name);
         this->index = other.index;
         this->inYear = other.inYear;
@@ -87,13 +87,13 @@ public:
     }
 
     Student(const Student& other) {
-        copy(other);
+        copy_student(other);
     }
 
     Student& operator=(const Student& other) {
         if(this == &other) return *this;
         delete [] grades;
-        copy(other);
+        copy_student(other);
         return *this;
     }
 
@@ -123,7 +123,7 @@ class PhDStudent : public Student {
     static int c;
     static int j;
 
-    void copyNew(const PhDStudent& other) {
+    void copy_phdstudent(const PhDStudent& other) {
         this->trudovi = new Trud[other.t_n];
         for(int i = 0; i < t_n; i++) this->trudovi[i] = other.trudovi[i];
         this->t_n = other.t_n;
@@ -137,25 +137,21 @@ public:
     PhDStudent(char* name, int index, int inYear, int* grades, int n, Trud* t, int t_n) : Student(name, index, inYear, grades, n) {
         this->trudovi = new Trud[t_n];
         for(int i = 0; i < t_n; i++) {
-            try {
-                if(t[i].getYear() < inYear) throw Exception();
-                else this->trudovi[i] = t[i];
-            } catch(Exception) {
-                Exception::message();
-            }
-
+            try { t[i].getYear() < inYear ? throw Exception() : this->trudovi[i] = t[i]; }
+            catch(Exception) { Exception::message(); }
         }
         this->t_n = t_n;
     }
 
-    PhDStudent(const PhDStudent& other) {
-        copyNew(other);
+    PhDStudent(const PhDStudent& other) : Student(other) {
+        copy_phdstudent(other);
     }
 
     PhDStudent& operator=(const PhDStudent& other) {
         if(this == &other) return *this;
+        Student::operator=(other);
         delete [] trudovi;
-        copyNew(other);
+        copy_phdstudent(other);
         return *this;
     }
 

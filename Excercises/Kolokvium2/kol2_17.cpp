@@ -10,10 +10,11 @@ protected:
     int goals[10];
 
 private:
-    void copy(const FudbalskaEkipa& other) {
+    void copy_ekipa(const FudbalskaEkipa& other) {
         strcpy(this->coach, other.coach);
         for(int i = 0; i < 10; i++) this->goals[i] = other.goals[i];
     }
+    
 public:
     FudbalskaEkipa() {
         strcpy(this->coach, "abc");
@@ -26,12 +27,12 @@ public:
     }
 
     FudbalskaEkipa(const FudbalskaEkipa& other) {
-        copy(other);
+        copy_ekipa(other);
     }
 
     FudbalskaEkipa& operator=(const FudbalskaEkipa& other) {
         if(this == &other) return *this;
-        copy(other);
+        copy_ekipa(other);
         return *this;
     }
 
@@ -65,9 +66,7 @@ class Klub : public FudbalskaEkipa {
     char* name;
     int titles;
 
-    void copy(const Klub& other) {
-        strcpy(this->coach, other.coach);
-        for(int i = 0; i < 10; i++) this->goals[i] = other.goals[i];
+    void copy_klub(const Klub& other) {
         this->name = new char[strlen(other.name) + 1];
         strcpy(this->name, other.name);
         this->titles = other.titles;
@@ -92,13 +91,13 @@ public:
     }
 
     Klub(const Klub& other) {
-        copy(other);
+        copy_klub(other);
     }
 
     Klub& operator=(const Klub& other) {
         if(this == &other) return *this;
-        delete [] name;
-        copy(other);
+        FudbalskaEkipa::operator=(other);
+        copy_klub(other);
         return *this;
     }
 
@@ -115,13 +114,12 @@ class Reprezentacija : public FudbalskaEkipa {
     char* country;
     int matches;
 
-    void copy(const Reprezentacija& other) {
-        strcpy(this->coach, other.coach);
-        for(int i = 0; i < 10; i++) this->goals[i] = other.goals[i];
+    void copy_reprezentacija(const Reprezentacija& other) {
         this->country = new char[strlen(other.country) + 1];
         strcpy(this->country, other.country);
         this->matches = other.matches;
     }
+
 public:
     Reprezentacija() : FudbalskaEkipa() {
         this->country = new char[0];
@@ -141,13 +139,13 @@ public:
     }
 
     Reprezentacija(const Reprezentacija& other) {
-        copy(other);
+        copy_reprezentacija(other);
     }
 
     Reprezentacija& operator=(const Reprezentacija& other) {
         if(this == &other) return *this;
-        delete [] country;
-        copy(other);
+        FudbalskaEkipa::operator=(other);
+        copy_reprezentacija(other);
         return *this;
     }
 

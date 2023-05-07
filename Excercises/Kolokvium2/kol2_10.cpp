@@ -5,10 +5,7 @@
 using namespace std;
 
 class NegativnaVrednost {
-public:
-    void message() {
-        cout << "Oglasot ima nevalidna vrednost za cenata i nema da bide evidentiran!\n";
-    }
+public: void message() { cout << "Oglasot ima nevalidna vrednost za cenata i nema da bide evidentiran!\n"; }
 };
 
 class Oglas {
@@ -17,7 +14,7 @@ class Oglas {
     char description[100];
     float price;
 
-    void copy(const Oglas& other) {
+    void copy_oglas(const Oglas& other) {
         strcpy(this->title, other.title);
         strcpy(this->category, other.category);
         strcpy(this->description, other.description);
@@ -39,12 +36,12 @@ public:
     }
 
     Oglas(const Oglas& other) {
-        copy(other);
+        copy_oglas(other);
     }
 
     Oglas& operator=(const Oglas& other) {
         if(this == &other) return *this;
-        copy(other);
+        copy_oglas(other);
         return *this;
     }
 
@@ -77,7 +74,7 @@ class Oglasnik {
     Oglas* oglasi;
     int n;
 
-    void copy(const Oglasnik& other) {
+    void copy_oglasnik(const Oglasnik& other) {
         strcpy(this->name, other.name);
         this->oglasi = new Oglas[other.n];
         for(int i = 0; i < n; i++) this->oglasi[i] = other.oglasi[i];
@@ -104,13 +101,13 @@ public:
     }
 
     Oglasnik(const Oglasnik& other) {
-        copy(other);
+        copy_oglasnik(other);
     }
 
     Oglasnik& operator=(const Oglasnik& other) {
         if(this == &other) return *this;
         delete [] oglasi;
-        copy(other);
+        copy_oglasnik(other);
         return *this;
     }
 

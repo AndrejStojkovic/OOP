@@ -5,10 +5,7 @@
 using namespace std;
 
 class BadInputException {
-public:
-    static void message() {
-        cout << "Greshna opisna ocenka\n";
-    }
+public: static void message() { cout << "Greshna opisna ocenka\n"; }
 };
 
 class StudentKurs{
@@ -19,7 +16,7 @@ protected:
     static int MAX;
 
 private:
-    void copy(const StudentKurs &other) {
+    void copy_kurs(const StudentKurs &other) {
         strcpy(this->ime, other.ime);
         this->ocenka = other.ocenka;
         this->daliUsno = other.daliUsno;
@@ -33,12 +30,12 @@ public:
     }
 
     StudentKurs(const StudentKurs& other) {
-        copy(other);
+        copy_kurs(other);
     }
 
     StudentKurs& operator=(const StudentKurs& other) {
         if(this == &other) return *this;
-        copy(other);
+        copy_kurs(other);
         return *this;
     }
 

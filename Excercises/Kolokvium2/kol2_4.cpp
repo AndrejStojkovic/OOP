@@ -11,6 +11,12 @@ protected:
     char ingredients[50];
     float basePrice;
 
+    void copy_pizza(const Pizza& other) {
+        strcpy(this->name, other.name);
+        strcpy(this->ingredients, other.ingredients);
+        this->ingredients[49] = '\0';
+        this->basePrice = other.basePrice;
+    }
 public:
     Pizza() {
         strcpy(this->name, " ");
@@ -26,27 +32,20 @@ public:
     }
 
     Pizza(const Pizza& other) {
-        strcpy(this->name, other.name);
-        strcpy(this->ingredients, other.ingredients);
-        this->ingredients[49] = '\0';
-        this->basePrice = other.basePrice;
+        copy_pizza(other);
     }
 
     Pizza& operator=(const Pizza& other) {
         if(this == &other) return *this;
-        strcpy(this->name, other.name);
-        strcpy(this->ingredients, other.ingredients);
-        this->ingredients[49] = '\0';
-        this->basePrice = other.basePrice;
+        copy_pizza(other);
         return *this;
     }
 
     friend ostream& operator<<(ostream& out, Pizza& p);
-    bool operator<(Pizza &p);
 
-    virtual float price() {
-        return basePrice;
-    }
+    bool operator<(Pizza &p) { return price() < p.price(); }
+
+    virtual float price() { return basePrice; }
 
     ~Pizza() { }
 };
@@ -64,18 +63,13 @@ public:
         this->size = size;
     }
 
-    FlatPizza(const FlatPizza& other) {
-        strcpy(this->name, other.name);
-        strcpy(this->ingredients, other.ingredients);
-        this->basePrice = other.basePrice;
+    FlatPizza(const FlatPizza& other) : Pizza(other) {
         this->size = other.size;
     }
 
     FlatPizza& operator=(const FlatPizza& other) {
         if(this == &other) return *this;
-        strcpy(this->name, other.name);
-        strcpy(this->ingredients, other.ingredients);
-        this->basePrice = other.basePrice;
+        Pizza::operator=(other);
         this->size = other.size;
         return *this;
     }
@@ -110,18 +104,13 @@ public:
         this->whiteFlour = true;
     }
 
-    FoldedPizza(const FoldedPizza& other) {
-        strcpy(this->name, other.name);
-        strcpy(this->ingredients, other.ingredients);
-        this->basePrice = other.basePrice;
+    FoldedPizza(const FoldedPizza& other) : Pizza(other) {
         this->whiteFlour = other.whiteFlour;
     }
 
     FoldedPizza& operator=(const FoldedPizza& other) {
         if(this == &other) return *this;
-        strcpy(this->name, other.name);
-        strcpy(this->ingredients, other.ingredients);
-        this->basePrice = other.basePrice;
+        Pizza::operator=(other);
         this->whiteFlour = other.whiteFlour;
         return *this;
     }
@@ -129,16 +118,10 @@ public:
     void setWhiteFlour(bool _whiteFlour) { this->whiteFlour = _whiteFlour; }
     bool getWhiteFlour() { return whiteFlour; }
 
-    float price() {
-        return basePrice * (whiteFlour ? 1.1 : 1.3);
-    }
+    float price() { return basePrice * (whiteFlour ? 1.1 : 1.3); }
 
     ~FoldedPizza() { }
 };
-
-bool Pizza::operator<(Pizza& p) {
-    return price() < p.price();
-}
 
 ostream& operator<<(ostream& out, Pizza& p) {
     out << p.name << ": " << p.ingredients << ", ";

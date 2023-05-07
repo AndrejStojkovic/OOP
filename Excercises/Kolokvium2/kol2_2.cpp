@@ -11,7 +11,7 @@ protected:
     int races;
     bool vet;
 
-    void copy(const Vozac& other) {
+    void copy_vozac(const Vozac& other) {
         strcpy(this->name, other.name);
         this->age = other.age;
         this->races = other.races;
@@ -32,12 +32,12 @@ public:
     }
 
     Vozac(const Vozac& other) {
-        copy(other);
+        copy_vozac(other);
     }
 
     Vozac& operator=(const Vozac& other) {
         if(this == &other) return *this;
-        copy(other);
+        copy_vozac(other);
         return *this;
     }
 
@@ -46,9 +46,7 @@ public:
     }
 
     friend ostream& operator<<(ostream& out, const Vozac& v) {
-        out << v.name << "\n";
-        out << v.age << "\n";
-        out << v.races << "\n";
+        out << v.name << "\n" << v.age << "\n" << v.races << "\n";
         if(v.vet) out << "VETERAN\n";
         return out;
     }
@@ -61,16 +59,8 @@ public:
 
 class Avtomobilist : public Vozac {
     float price;
-
-    void copy(const Avtomobilist& other) {
-        strcpy(this->name, other.name);
-        this->age = other.age;
-        this->races = other.races;
-        this->vet = other.vet;
-        this->price = other.price;
-    }
-
     float zarabotuvachka() { return this->price / 5.0; }
+
 public:
     Avtomobilist() : Vozac() {
         this->price = 0.0;
@@ -80,13 +70,14 @@ public:
         this->price = price;
     }
 
-    Avtomobilist(const Avtomobilist& other) {
-        copy(other);
+    Avtomobilist(const Avtomobilist& other) : Vozac(other) {
+        this->price = other.price;
     }
 
     Avtomobilist& operator=(const Avtomobilist& other) {
         if(this == &other) return *this;
-        copy(other);
+        Vozac::operator=(other);
+        this->price = other.price;
         return *this;
     }
 
@@ -103,13 +94,6 @@ public:
 class Motociklist : public Vozac {
     int power;
 
-    void copy(const Motociklist& other) {
-        strcpy(this->name, other.name);
-        this->age = other.age;
-        this->races = other.races;
-        this->vet = other.vet;
-        this->power = other.power;
-    }
 public:
     Motociklist() : Vozac() {
         this->power = 0;
@@ -120,12 +104,13 @@ public:
     }
 
     Motociklist(const Motociklist& other) {
-        copy(other);
+        this->power = other.power;
     }
 
     Motociklist& operator=(const Motociklist& other) {
         if(this == &other) return *this;
-        copy(other);
+        Vozac::operator=(other);
+        this->power = other.power;
         return *this;
     }
 

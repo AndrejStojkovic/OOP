@@ -12,7 +12,7 @@ protected:
     int height;
 
 private:
-    void copy(const Image& other) {
+    void copy_image(const Image& other) {
         this->name = new char[strlen(other.name) + 1];
         strcpy(this->name, other.name);
         strcpy(this->author, other.author);
@@ -51,13 +51,13 @@ public:
     }
 
     Image(const Image& other) {
-        copy(other);
+        copy_image(other);
     }
 
     Image& operator=(const Image& other) {
         if(this == &other) return *this;
         delete [] name;
-        copy(other);
+        copy_image(other);
         return *this;
     }
 
@@ -129,7 +129,7 @@ class Folder {
     Image* images[100];
     int n;
 
-    void copy(const Folder& other) {
+    void copy_folder(const Folder& other) {
         strcpy(this->name, other.name);
         strcpy(this->author, other.author);
         for(int i = 0; i < other.n; i++) this->images[i] = other.images[i];
@@ -150,12 +150,12 @@ public:
     }
 
     Folder(const Folder& other) {
-        copy(other);
+        copy_folder(other);
     }
 
     Folder& operator=(const Folder& other) {
         if(this == &other) return *this;
-        copy(other);
+        copy_folder(other);
         return *this;
     }
 

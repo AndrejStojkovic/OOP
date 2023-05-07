@@ -9,7 +9,7 @@ class Delo {
     int year;
     char country[50];
 
-    void copy(const Delo& other) {
+    void copy_delo(const Delo& other) {
         strcpy(this->name, other.name);
         this->year = other.year;
         strcpy(this->country, other.country);
@@ -28,12 +28,12 @@ public:
     }
 
     Delo(const Delo& other) {
-        copy(other);
+        copy_delo(other);
     }
 
     Delo& operator=(const Delo& other) {
         if(this == &other) return *this;
-        copy(other);
+        copy_delo(other);
         return *this;
     }
 
@@ -58,7 +58,7 @@ class Pretstava {
     int n;
     char* date;
 
-    void copy(const Pretstava& other) {
+    void copy_pretstava(const Pretstava& other) {
         this->d = other.d;
         this->n = other.n;
         this->date = new char[strlen(other.date) + 1];
@@ -79,13 +79,13 @@ public:
     }
 
     Pretstava(const Pretstava& other) {
-        copy(other);
+        copy_pretstava(other);
     }
 
     Pretstava& operator=(const Pretstava& other) {
         if(this == &other) return *this;
         delete [] date;
-        copy(other);
+        copy_pretstava(other);
         return *this;
     }
 

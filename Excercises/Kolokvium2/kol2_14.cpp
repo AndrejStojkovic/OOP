@@ -77,19 +77,13 @@ class SpecialSMS : public SMS {
     static float mult;
 
 public:
-    SpecialSMS() : SMS() {
-        this->humane = false;
-    }
+    SpecialSMS() : SMS() { this->humane = false; }
 
-    SpecialSMS(char* name, float price, bool humane) : SMS(name, price) {
-        this->humane = humane;
-    }
+    SpecialSMS(char* name, float price, bool humane) : SMS(name, price) { this->humane = humane; }
 
     static void set_sProcent(float val) { SpecialSMS::mult = val / 100; }
 
-    float SMS_cena() {
-        return humane ? price : price * (1.0 + mult);
-    }
+    float SMS_cena() { return humane ? price : price * (1.0 + mult); }
 
     ~SpecialSMS() { }
 };

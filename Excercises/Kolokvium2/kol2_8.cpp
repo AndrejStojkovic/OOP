@@ -11,11 +11,13 @@ protected:
     static double discount;
     double price;
 
-    void copy(const Koncert& other) {
+private:
+    void copy_koncert(const Koncert& other) {
         strcpy(this->name, other.name);
         strcpy(this->location, other.location);
         this->price = other.price;
     }
+
 public:
     Koncert() {
         strcpy(this->name, "abc");
@@ -30,12 +32,12 @@ public:
     }
 
     Koncert(const Koncert& other) {
-        copy(other);
+        copy_koncert(other);
     }
 
     Koncert& operator=(const Koncert& other) {
         if(this == &other) return *this;
-        copy(other);
+        copy_koncert(other);
         return *this;
     }
 
@@ -61,6 +63,13 @@ class ElektronskiKoncert : public Koncert {
     float hours;
     bool time; // false - night, true - day
 
+    void copy_elkoncert(const ElektronskiKoncert& other) {
+        this->dj = new char[strlen(other.dj) + 1];
+        strcpy(this->dj, other.dj);
+        this->hours = other.hours;
+        this->time = other.time;
+    }
+
 public:
     ElektronskiKoncert() : Koncert() {
         this->dj = new char[0];
@@ -76,20 +85,14 @@ public:
     }
 
     ElektronskiKoncert(const ElektronskiKoncert& other) : Koncert(other) {
-        this->dj = new char[strlen(other.dj) + 1];
-        strcpy(this->dj, other.dj);
-        this->hours = other.hours;
-        this->time = other.time;
+        copy_elkoncert(other);
     }
 
     ElektronskiKoncert& operator=(const ElektronskiKoncert& other) {
         if(this == &other) return *this;
-        copy(other);
+        Koncert::operator=(other);
         delete [] dj;
-        this->dj = new char[strlen(other.dj) + 1];
-        strcpy(this->dj, other.dj);
-        this->hours = other.hours;
-        this->time = other.time;
+        copy_elkoncert(other);
         return *this;
     }
 

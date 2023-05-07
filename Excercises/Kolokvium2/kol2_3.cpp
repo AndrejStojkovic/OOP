@@ -6,7 +6,7 @@ class Kurs {
     char* name;
     int credits;
 
-    void copy(const Kurs& other) {
+    void copy_kurs(const Kurs& other) {
         this->name = new char[strlen(other.name) + 1];
         strcpy(this->name, other.name);
         this->credits = other.credits;
@@ -25,13 +25,13 @@ public:
     }
 
     Kurs(const Kurs& other) {
-        copy(other);
+        copy_kurs(other);
     }
 
     Kurs& operator=(const Kurs& other) {
         if(this == &other) return *this;
         delete [] name;
-        copy(other);
+        copy_kurs(other);
         return *this;
     }
 
@@ -51,7 +51,7 @@ public:
         this->index = index;
     }
 
-    void message() const {
+    void message() {
         cout << "Demonstratorot so indeks " << index << " ne drzi laboratoriski vezbi\n";
     }
 };
@@ -60,7 +60,7 @@ class Student {
     int* grades;
     int n;
 
-    void copy(const Student& other) {
+    void copy_student(const Student& other) {
         this->index = other.index;
         this->n = other.n;
         this->grades = new int[n];
@@ -84,13 +84,13 @@ public:
     }
 
     Student(const Student& other) {
-        copy(other);
+        copy_student(other);
     }
 
     Student& operator=(const Student& other) {
         if(this == &other) return *this;
         delete [] grades;
-        copy(other);
+        copy_student(other);
         return *this;
     }
 
@@ -115,7 +115,7 @@ class Predavach {
     Kurs* courses;
     int n;
 
-    void copy(const Predavach& other) {
+    void copy_predavach(const Predavach& other) {
         this->name = new char[strlen(other.name) + 1];
         strcpy(this->name, other.name);
         this->n = other.n;
@@ -143,14 +143,14 @@ public:
     }
 
     Predavach(const Predavach& other) {
-        copy(other);
+        copy_predavach(other);
     }
 
     Predavach& operator=(const Predavach& other) {
         if(this == &other) return *this;
         delete [] name;
         delete [] courses;
-        copy(other);
+        copy_predavach(other);
         return *this;
     }
 
@@ -186,10 +186,6 @@ public:
         this->hours = hours;
     }
 
-    Demonstrator& operator=(const Demonstrator& other) {
-
-    }
-
     int getBodovi() {
         if(getNumberOfCourses() <= 0) throw NoCourseException(index);
         return Student::getBodovi() + (20 * hours) / getNumberOfCourses();
@@ -208,11 +204,8 @@ Student& vratiNajdobroRangiran(Student** studenti, int n) {
     int idx = 0;
 
     for(int i = 0; i < n; i++) {
-        try {
-            if(studenti[i]->getBodovi() > studenti[idx]->getBodovi()) idx = i;
-        } catch(NoCourseException &e) {
-            e.message();
-        }
+        try { idx = studenti[i]->getBodovi() > studenti[idx]->getBodovi() ? i : idx; }
+        catch(NoCourseException &e) { e.message(); }
     }
 
     return *studenti[idx];

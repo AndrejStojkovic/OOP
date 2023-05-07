@@ -11,7 +11,7 @@ protected:
     char author[30];
     float price;
 
-    void copy(const Book& other) {
+    void copy_book(const Book& other) {
         strcpy(this->ISBN, other.ISBN);
         strcpy(this->title, other.title);
         strcpy(this->author, other.author);
@@ -33,12 +33,12 @@ public:
     }
 
     Book(const Book& other) {
-        copy(other);
+        copy_book(other);
     }
 
     Book& operator=(const Book& other) {
         if(this == &other) return *this;
-        copy(other);
+        copy_book(other);
         return *this;
     }
 
@@ -58,16 +58,11 @@ class OnlineBook : public Book {
     char* url;
     int size;
 
-    void copy(const OnlineBook& other) {
-        strcpy(this->ISBN, other.ISBN);
-        strcpy(this->title, other.title);
-        strcpy(this->author, other.author);
-        this->price = other.price;
+    void copy_onlinebook(const OnlineBook& other) {
         this->url = new char[strlen(other.url) + 1];
         strcpy(this->url, other.url);
         this->size = other.size;
     }
-
 public:
     OnlineBook() : Book() {
         this->url = new char[0];
@@ -81,14 +76,15 @@ public:
         this->size = size;
     }
 
-    OnlineBook(const OnlineBook& other) {
-        copy(other);
+    OnlineBook(const OnlineBook& other) : Book(other) {
+        copy_onlinebook(other);
     }
 
     OnlineBook& operator=(const OnlineBook& other) {
         if(this == &other) return *this;
+        Book::operator=(other);
         delete [] url;
-        copy(other);
+        copy_onlinebook(other);
         return *this;
     }
 
@@ -105,15 +101,10 @@ class PrintBook : public Book {
     float weight;
     bool inStock;
 
-    void copy(const PrintBook& other) {
-        strcpy(this->ISBN, other.ISBN);
-        strcpy(this->title, other.title);
-        strcpy(this->author, other.author);
-        this->price = other.price;
+    void copy_printbook(const PrintBook& other) {
         this->weight = other.weight;
         this->inStock = other.inStock;
     }
-
 public:
     PrintBook() : Book() {
         this->weight = 0.0;
@@ -125,13 +116,14 @@ public:
         this->inStock = inStock;
     }
 
-    PrintBook(const PrintBook& other) {
-        copy(other);
+    PrintBook(const PrintBook& other) : Book(other) {
+        copy_printbook(other);
     }
 
     PrintBook& operator=(const PrintBook& other) {
         if(this == &other) return *this;
-        copy(other);
+        Book::operator=(other);
+        copy_printbook(other);
         return *this;
     }
 
@@ -148,17 +140,12 @@ bool operator>(Book& a, Book& b) {
 }
 
 void mostExpensiveBook(Book** books, int n) {
-    int online = 0, printed = 0;
-
-    int idx = -1;
+    int online = 0, printed = 0, idx = -1;
 
     for(int i = 0; i < n; i++) {
         if(dynamic_cast<OnlineBook*>(books[i])) online++;
         else if(dynamic_cast<PrintBook*>(books[i])) printed++;
-
-        if(idx == -1) { idx = i; continue; }
-
-        if(books[i]->bookPrice() > books[idx]->bookPrice()) idx = i;
+        if(idx == -1 || books[i]->bookPrice() > books[idx]->bookPrice()) idx = i;
     }
 
     if(idx == -1) return;

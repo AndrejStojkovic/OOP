@@ -7,10 +7,8 @@ using namespace std;
 enum tip { smartphone, computer };
 char Tip[][8] = { "Mobilen", "Laptop" };
 
-class InvalidProductionDate
-{
-public:
-    void message() { cout << "Невалидна година на производство" << endl; }
+class InvalidProductionDate {
+public: void message() { cout << "Невалидна година на производство" << endl; }
 };
 
 class Device {
@@ -19,7 +17,7 @@ class Device {
     static float hours;
     int year;
 
-    void copy(const Device& other) {
+    void copy_device(const Device& other) {
         strcpy(this->model, other.model);
         this->type = other.type;
         this->year = other.year;
@@ -38,12 +36,12 @@ public:
     }
 
     Device(const Device& other) {
-        copy(other);
+        copy_device(other);
     }
 
     Device& operator=(const Device& other) {
         if(this == &other) return *this;
-        copy(other);
+        copy_device(other);
         return *this;
     }
 
@@ -81,7 +79,7 @@ class MobileServis {
     Device* d;
     int n;
 
-    void copy(const MobileServis& other) {
+    void copy_mobileservis(const MobileServis& other) {
         strcpy(this->address, other.address);
         this->d = new Device[other.n];
         for(int i = 0; i < other.n; i++) this->d[i] = other.d[i];
@@ -101,13 +99,13 @@ public:
     }
 
     MobileServis(const MobileServis& other) {
-        copy(other);
+        copy_mobileservis(other);
     }
 
     MobileServis& operator=(const MobileServis& other) {
         if(this == &other) return *this;
         delete [] d;
-        copy(other);
+        copy_mobileservis(other);
         return *this;
     }
 

@@ -15,7 +15,7 @@ class Customer {
     int additionalDiscount;
     int items;
 
-    void copy(const Customer& other) {
+    void copy_customer(const Customer& other) {
         strcpy(this->name, other.name);
         strcpy(this->email, other.email);
         this->type = other.type;
@@ -42,12 +42,12 @@ public:
     }
 
     Customer(const Customer& other) {
-        copy(other);
+        copy_customer(other);
     }
 
     Customer& operator=(const Customer& other) {
         if(this == &other) return *this;
-        copy(other);
+        copy_customer(other);
         return *this;
     }
 
@@ -83,7 +83,7 @@ public:
 
 class UserExistsException {
 public:
-    void message() const {
+    void message() {
         cout << "The user already exists in the list!\n";
     }
 };
@@ -93,7 +93,7 @@ class FINKI_bookstore {
     Customer* customers;
     int n;
 
-    void copy(const FINKI_bookstore& other) {
+    void copy_bookstore(const FINKI_bookstore& other) {
         this->n = other.n;
         this->customers = new Customer[other.n];
         for(int i = 0; i < other.n; i++) this->customers[i] = other.customers[i];
@@ -111,13 +111,13 @@ public:
     }
 
     FINKI_bookstore(const FINKI_bookstore& other) {
-        copy(other);
+        copy_bookstore(other);
     }
 
     FINKI_bookstore& operator=(const FINKI_bookstore& other) {
         if(this == &other) return *this;
         delete [] customers;
-        copy(other);
+        copy_bookstore(other);
         return *this;
     }
 

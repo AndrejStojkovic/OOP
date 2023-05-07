@@ -10,7 +10,7 @@ protected:
     int price;
     int km;
 
-    void copy(const Transport& other) {
+    void copy_transport(const Transport& other) {
         this->destination = new char[strlen(other.destination) + 1];
         strcpy(this->destination, other.destination);
         this->price = other.price;
@@ -31,13 +31,13 @@ public:
     }
 
     Transport(const Transport& other) {
-        copy(other);
+        copy_transport(other);
     }
 
     Transport& operator=(const Transport& other) {
         if(this == &other) return *this;
         delete [] destination;
-        copy(other);
+        copy_transport(other);
         return *this;
     }
 
@@ -89,8 +89,7 @@ public:
 
     AvtomobilTransport& operator=(const AvtomobilTransport& other) {
         if(this == &other) return *this;
-        delete [] destination;
-        copy(other);
+        Transport::operator=(other);
         this->driver = other.driver;
         return *this;
     }
@@ -121,8 +120,7 @@ public:
 
     KombeTransport& operator=(const KombeTransport& other) {
         if(this == &other) return *this;
-        delete [] destination;
-        copy(other);
+        Transport::operator=(other);
         this->passengers;
         return *this;
     }

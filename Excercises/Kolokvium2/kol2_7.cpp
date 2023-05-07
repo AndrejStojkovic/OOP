@@ -8,10 +8,7 @@
 using namespace std;
 
 class OutOfBoundsException {
-public:
-    void message() {
-        cout << "Brojot na pin kodovi ne moze da go nadmine dozvolenoto\n";
-    }
+public: void message() { cout << "Brojot na pin kodovi ne moze da go nadmine dozvolenoto\n"; }
 };
 
 class Karticka{
@@ -21,7 +18,7 @@ protected:
     bool povekjePin;
 
 private:
-    void copy(const Karticka& other) {
+    void copy_karticka(const Karticka& other) {
         strcpy(this->smetka, other.smetka);
         this->pin = other.pin;
         this->povekjePin = other.povekjePin;
@@ -40,12 +37,12 @@ public:
     }
 
     Karticka(const Karticka& other) {
-        copy(other);
+        copy_karticka(other);
     }
 
     Karticka& operator=(const Karticka& other) {
         if(this == &other) return *this;
-        copy(other);
+        copy_karticka(other);
         return *this;
     }
 
@@ -57,6 +54,7 @@ public:
 
     friend ostream& operator<<(ostream& out, Karticka& k) {
         out << k.smetka << ": " << k.tezinaProbivanje() << "\n";
+        return out;
     }
 
     char* getSmetka() { return smetka; }
@@ -76,7 +74,7 @@ class SpecijalnaKarticka : public Karticka {
     int* pinovi;
     int pinovi_n;
 
-    void copy(const SpecijalnaKarticka& other) {
+    void copy_special(const SpecijalnaKarticka& other) {
         strcpy(this->smetka, other.smetka);
         this->pin = other.pin;
         this->povekjePin = other.povekjePin;
@@ -97,14 +95,15 @@ public:
         this->pinovi_n = 0;
     }
 
-    SpecijalnaKarticka(const SpecijalnaKarticka& other) {
-        copy(other);
+    SpecijalnaKarticka(const SpecijalnaKarticka& other) : Karticka(other) {
+        copy_special(other);
     }
 
     SpecijalnaKarticka& operator=(const SpecijalnaKarticka& other) {
         if(this == &other) return *this;
+        Karticka::operator=(other);
         delete [] pinovi;
-        copy(other);
+        copy_special(other);
         return *this;
     }
 
@@ -129,7 +128,6 @@ public:
         delete [] pinovi;
     }
 };
-
 
 class Banka {
 private:
