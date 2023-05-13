@@ -69,7 +69,6 @@ public:
     ~Karticka() { }
 };
 
-//вметнете го кодот за SpecijalnaKarticka
 class SpecijalnaKarticka : public Karticka {
     int* pinovi;
     int pinovi_n;
@@ -200,8 +199,9 @@ int main(){
     for (int i=0;i<m;i++){
         cin>>smetka>>pin;
 
-        komercijalna.dodadiDopolnitelenPin(smetka,pin);
-
+        try { komercijalna.dodadiDopolnitelenPin(smetka,pin); }
+        catch(OutOfBoundsException& e) { e.message(); }
+    
     }
 
     Banka::setLIMIT(5);
