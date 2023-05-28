@@ -218,6 +218,7 @@ int main(){
         ob2.setISBN(isbn);
         cout << ob1 << endl;
         cout << ob2 << endl;
+        cout << "here\n";
     }
     if (testCase == 3){
         cout << "====== Testing PrintBook class ======" << endl;
