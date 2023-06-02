@@ -11,10 +11,16 @@ class Pesna {
     int minutes;
     tip type;
 
+    void copy_pesna(const Pesna& other) {
+        this->name = new char[strlen(other.name) + 1];
+        strcpy(this->name, other.name);
+        this->minutes = other.minutes;
+        this->type = other.type;
+    }
+
 public:
     Pesna() {
-        this->name = new char[2];
-        strcpy(this->name, " ");
+        this->name = nullptr;
         this->minutes = 0;
         this->type = POP;
     }
@@ -27,32 +33,25 @@ public:
     }
 
     Pesna(const Pesna& other) {
-        this->name = new char[strlen(other.name) + 1];
-        strcpy(this->name, other.name);
-        this->minutes = other.minutes;
-        this->type = other.type;
+        copy_pesna(other);
     }
 
     Pesna& operator=(const Pesna& other) {
-        if(this == &other) return *this;
-
+        if(this == &other) {
+            return *this;
+        }
         delete [] this->name;
-        this->name = new char[strlen(other.name) + 1];
-        strcpy(this->name, other.name);
-        this->minutes = other.minutes;
-        this->type = other.type;
-
+        copy_pesna(other);
         return *this;
     }
 
-    char* getName() { return name; }
-    void setName(char* name) { strcpy(this->name, name); }
+    int getMinutes() {
+        return minutes;
+    }
 
-    int getMinutes() { return minutes; }
-    void setMinutes(int minutes) { this->minutes = minutes; }
-
-    enum tip getType() { return type; }
-    void setType(enum tip type) { this->type = type; }
+    enum tip getType() {
+        return type;
+    }
 
     void pecati() {
         cout << "\"" << name << "\"" << "-" << minutes << "min\n";
@@ -68,6 +67,14 @@ class CD {
     int num;
     int length;
 
+    void copy_cd(const CD& other) {
+        for(int i = 0; i< other.num; i++) {
+            this->pesni[i] = other.pesni[i];
+        }
+        this->num = other.num;
+        this->length = other.length;
+    }
+
 public:
     CD() {
         this->num = 0;
@@ -79,33 +86,31 @@ public:
     }
 
     CD(const CD& other) {
-        for(int i = 0; i< other.num; i++) this->pesni[i] = other.pesni[i];
-        this->num = other.num;
-        this->length = other.length;
+        copy_cd(other);
     }
 
     CD& operator=(const CD& other) {
-        if(this == &other) return *this;
-
-        for(int i = 0; i< other.num; i++) this->pesni[i] = other.pesni[i];
-        this->num = other.num;
-        this->length = other.length;
-
+        if(this == &other) {
+            return *this;
+        }
+        copy_cd(other);
         return *this;
     }
 
-    Pesna getPesna(int idx) { return pesni[idx]; }
+    Pesna getPesna(int idx) {
+        return pesni[idx];
+    }
 
-    int getNum() { return num; }
-    void setNum(int num) { this->num = num; }
-
-    int getLength() { return length; }
-    void setLength(int length) { this->length = length; }
+    int getNum() {
+        return num;
+    }
 
     void dodadiPesna(Pesna p) {
         int currMinutes = 0;
 
-        for(int i = 0; i < num; i++) currMinutes += pesni[i].getMinutes();
+        for(int i = 0; i < num; i++) {
+            currMinutes += pesni[i].getMinutes();
+        }
 
         if(num < 10 && currMinutes + p.getMinutes() <= length) {
             pesni[num++] = p;

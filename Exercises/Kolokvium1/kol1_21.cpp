@@ -18,7 +18,7 @@ typedef struct tancer_t {
 void tancuvanje(Tancer *t, int n, char *zemja) {
     for(int i = 0; i < n; i++) {
         for(int j = 0; j < 3; j++) {
-            if(strcmp(zemja, t[i].niza[j].zemja) == 0) {
+            if(!strcmp(zemja, t[i].niza[j].zemja)) {
                 cout << t[i].ime << " " << t[i].prezime << ", " << t[i].niza[j].ime << "\n";
                 break;
             }

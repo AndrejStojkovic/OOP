@@ -10,6 +10,13 @@ class Gitara {
     int year;
     char type[40];
 
+    void copy_gitara(const Gitara& other) {
+        strcpy(this->serial_number, other.serial_number);
+        this->price = other.price;
+        this->year = other.year;
+        strcpy(this->type, other.type);
+    }
+
 public:
     Gitara() {
         strcpy(this->serial_number, "serial");
@@ -26,37 +33,35 @@ public:
     }
 
     Gitara(const Gitara& other) {
-        strcpy(this->serial_number, other.serial_number);
-        this->price = other.price;
-        this->year = other.year;
-        strcpy(this->type, other.type);
+        copy_gitara(other);
     }
 
     Gitara& operator=(const Gitara& other) {
-        if(this == &other) return *this;
-
-        strcpy(this->serial_number, other.serial_number);
-        this->price = other.price;
-        this->year = other.year;
-        strcpy(this->type, other.type);
-
+        if(this == &other) {
+            return *this;
+        }
+        copy_gitara(other);
         return *this;
     }
 
-    char* getSerialNumber() { return serial_number; }
-    void setSerialNumber(char* serial_number) { strcpy(this->serial_number, serial_number); }
+    char* getSerialNumber() {
+        return serial_number;
+    }
 
-    float getPrice() { return price; }
-    void setPrice(float price) { this->price = price; }
+    float getPrice() {
+        return price;
+    }
 
-    int getYear() { return year; }
-    void setYear(int year) { this->year = year; }
+    int getYear() {
+        return year;
+    }
 
-    char* getType() { return type; }
-    void setType(char* type) { strcpy(this->type, type); }
+    char* getType() {
+        return type;
+    }
 
     bool daliIsti(Gitara g) {
-        return strcmp(serial_number, g.serial_number) == 0;
+        return !strcmp(serial_number, g.serial_number);
     }
 
     void pecati() {
@@ -73,18 +78,29 @@ class Magacin {
     int num;
     int year;
 
+    void copy_magacin(const Magacin& other) {
+        strcpy(this->name, other.name);
+        strcpy(this->location, other.location);
+        this->num = other.num;
+        this->year = other.year;
+        this->guitars = new Gitara[other.num];
+        for(int i = 0; i < other.num; i++) {
+            this->guitars[i] = other.guitars[i];
+        }
+    }
+
 public:
     Magacin() {
         strcpy(this->name, " ");
         strcpy(this->location, " ");
-        guitars = new Gitara[0];
+        this->guitars = nullptr;
         this->num = this->year = 0;
     }
 
     Magacin(char* name, char* location) {
         strcpy(this->name, name);
         strcpy(this->location, location);
-        this->guitars = new Gitara[0];
+        this->guitars = nullptr;
         this->num = 0;
         this->year = 2023;
     }
@@ -92,77 +108,44 @@ public:
     Magacin(char* name, char* location, int year) {
         strcpy(this->name, name);
         strcpy(this->location, location);
-        this->guitars = new Gitara[0];
+        this->guitars = nullptr;
         this->num = 0;
         this->year = year;
     }
 
-    Magacin(char* name, char* location, Gitara* guitars, int num, int year) {
-        strcpy(this->name, name);
-        strcpy(this->location, location);
-        this->num = num;
-        this->year = year;
-        delete [] this->guitars;
-        this->guitars = new Gitara[num];
-        for(int i = 0; i < num; i++) this->guitars[i] = guitars[i];
-    }
-
     Magacin(const Magacin& other) {
-        strcpy(this->name, other.name);
-        strcpy(this->location, other.location);
-        this->num = other.num;
-        this->year = other.year;
-        this->guitars = new Gitara[other.num];
-        for(int i = 0; i < other.num; i++) this->guitars[i] = other.guitars[i];
+        copy_magacin(other);
     }
 
     Magacin& operator=(const Magacin& other) {
-        if(this == &other) return *this;
-
-        strcpy(this->name, other.name);
-        strcpy(this->location, other.location);
-        this->num = other.num;
-        this->year = other.year;
-        this->guitars = new Gitara[other.num];
-        for(int i = 0; i < other.num; i++) this->guitars[i] = other.guitars[i];
-
-        return *this;
-    }
-
-    char* getName() { return name; }
-    void setName(char* name) { strcpy(this->name, name); }
-
-    char* getLocation() { return location; }
-    void setLocation(char* location) { strcpy(this->location, location); }
-
-    int getNum() { return num; }
-    void setNum(int num) { this->num = num; }
-
-    int getYear() { return year; }
-    void setYear(int year) { this->year = year; }
-
-    Gitara* getGuitars() { return guitars; }
-    void setGuitars(Gitara* guitars, int n) {
+        if(this == &other) {
+            return *this;
+        }
         delete [] guitars;
-        guitars = new Gitara[n];
-        for(int i = 0; i < n; i++) this->guitars[i] = guitars[i];
+        copy_magacin(other);
+        return *this;
     }
 
     double vrednost() {
         double s = 0;
-        for(int i = 0; i < num; i++) s += guitars[i].getPrice();
+        for(int i = 0; i < num; i++) {
+            s += guitars[i].getPrice();
+        }
         return s;
     }
 
     void dodadi(Gitara d) {
         Gitara* tmp = new Gitara[num];
 
-        for(int i = 0; i < num; i++) tmp[i] = this->guitars[i];
+        for(int i = 0; i < num; i++) {
+            tmp[i] = this->guitars[i];
+        }
+
         delete [] this->guitars;
-
         this->guitars = new Gitara[num + 1];
-
-        for(int i = 0; i < num; i++) this->guitars[i] = tmp[i];
+        for(int i = 0; i < num; i++) {
+            this->guitars[i] = tmp[i];
+        }
         delete [] tmp;
 
         this->guitars[num++] = d;
@@ -171,20 +154,28 @@ public:
     void prodadi(Gitara p) {
         int el = 0, ct = 0;
 
-        for(int i = 0; i < num; i++) el += !guitars[i].daliIsti(p);
+        for(int i = 0; i < num; i++) {
+            el += !guitars[i].daliIsti(p);
+        }
 
-        if(!el) return;
+        if(!el) {
+            return;
+        }
 
         Gitara* tmp = new Gitara[el];
 
         for(int i = 0; i < num; i++) {
-            if(guitars[i].daliIsti(p)) continue;
+            if(guitars[i].daliIsti(p)) {
+                continue;
+            }
             tmp[ct++] = this->guitars[i];
         }
 
         delete [] this->guitars;
         this->guitars = new Gitara[ct];
-        for(int i = 0; i < ct; i++) this->guitars[i] = tmp[i];
+        for(int i = 0; i < ct; i++) {
+            this->guitars[i] = tmp[i];
+        }
         this->num = ct;
 
         delete [] tmp;

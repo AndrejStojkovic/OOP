@@ -12,10 +12,17 @@ class OperativenSistem {
     Tip tip;
     float golemina;
 
+    void copy_os(const OperativenSistem& other) {
+        this->ime = new char[strlen(other.ime) + 1];
+        strcpy(this->ime, other.ime);
+        this->verzija = other.verzija;
+        this->tip = other.tip;
+        this->golemina = other.golemina;
+    }
+
 public:
     OperativenSistem() {
-        this->ime = new char[0];
-        strcpy(this->ime, " ");
+        this->ime = nullptr;
         this->verzija = 0.1;
         this->tip = LINUX;
         this->golemina = 1.0;
@@ -29,48 +36,25 @@ public:
         this->golemina = golemina;
     }
 
-    OperativenSistem(const OperativenSistem& os) {
-        this->ime = new char[strlen(os.ime) + 1];
-        strcpy(this->ime, os.ime);
-        this->verzija = os.verzija;
-        this->tip = os.tip;
-        this->golemina = os.golemina;
+    OperativenSistem(const OperativenSistem& other) {
+        copy_os(other);
     }
 
-    OperativenSistem& operator=(const OperativenSistem& os) {
-        if(this == &os) return *this;
-
+    OperativenSistem& operator=(const OperativenSistem& other) {
+        if(this == &other) {
+            return *this;
+        }
         delete [] this->ime;
-        this->ime = new char[strlen(os.ime) + 1];
-        strcpy(this->ime, os.ime);
-        this->verzija = os.verzija;
-        this->tip = os.tip;
-        this->golemina = os.golemina;
-
+        copy_os(other);
         return *this;
     }
-
-    char* getIme() { return ime; }
-    void setIme(char* ime) {
-        this->ime = new char[strlen(ime) + 1];
-        strcpy(this->ime, ime);
-    }
-
-    float getVerzija() { return verzija; }
-    void setVerzija(float verzija) { this->verzija = verzija; }
-
-    enum Tip getTip() { return tip; }
-    void setTip(enum Tip Tip) { this->tip = tip; }
-
-    float getGolemina() { return golemina; }
-    void setGolemina(float golemina) { this->golemina = golemina; }
 
     void pecati() {
         cout << "Ime: " << ime << " Verzija: " << verzija << " Tip: " << tip << " Golemina:" << golemina << "GB" << "\n";
     }
 
     bool ednakviSe(const OperativenSistem& os) {
-        return strcmp(ime, os.ime) == 0 && verzija == os.verzija && tip == os.tip && golemina == os.golemina;
+        return !strcmp(ime, os.ime) && verzija == os.verzija && tip == os.tip && golemina == os.golemina;
     }
 
     int sporediVerzija(const OperativenSistem& os) {
@@ -78,7 +62,7 @@ public:
     }
 
     bool istaFamilija(const OperativenSistem& sporedba) {
-        return strcmp(ime, sporedba.ime) == 0 && tip == sporedba.tip;
+        return !strcmp(ime, sporedba.ime) && tip == sporedba.tip;
     }
 
     ~OperativenSistem() {
@@ -91,55 +75,39 @@ class Repozitorium {
     OperativenSistem* os;
     int os_n;
 
+    void copy_repo(const Repozitorium& other) {
+        strcpy(this->ime, other.ime);
+        this->os = new OperativenSistem[other.os_n];
+        for(int i = 0; i < other.os_n; i++) {
+            this->os[i] = other.os[i];
+        }
+        this->os_n = other.os_n;
+    }
+
 public:
     Repozitorium() {
-        strcpy(ime, " ");
-        os = new OperativenSistem[10];
+        os = nullptr;
         os_n = 0;
     }
 
     Repozitorium(const char* ime) {
         strcpy(this->ime, ime);
-        this->os = new OperativenSistem[10];
+        this->os = nullptr;
         os_n = 0;
     }
 
-    Repozitorium(const char* ime, OperativenSistem* os, const int os_n) {
-        strcpy(this->ime, ime);
-        this->os = os;
-        this->os_n = os_n;
+    Repozitorium(const Repozitorium& other) {
+        copy_repo(other);
     }
 
-    Repozitorium(const Repozitorium& repo) {
-        strcpy(this->ime, repo.ime);
-        this->os = repo.os;
-        this->os_n = repo.os_n;
-    }
-
-    Repozitorium& operator=(const Repozitorium& repo) {
-        if(this == &repo) return *this;
-
-        strcpy(this->ime, repo.ime);
+    Repozitorium& operator=(const Repozitorium& other) {
+        if(this == &other) {
+            return *this;
+        }
         delete [] this->os;
-        this->os = new OperativenSistem[repo.os_n];
-        this->os = repo.os;
-        this->os_n = repo.os_n;
-
+        copy_repo(other);
         return *this;
     }
-
-    char* getIme() { return ime; }
-    void setIme(char* ime) { strcpy(this->ime, ime); }
-
-    OperativenSistem* getOS() { return os; }
-    void setOS(OperativenSistem* os, int n) {
-        delete [] os;
-        this->os = new OperativenSistem[n];
-        for(int i = 0; i < n; i++) this->os[i] = os[i];
-    }
-
-    int getNum() { return os_n; }
-    void setNum(int os_n) { this->os_n = os_n; }
 
     void pecatiOperativniSistemi() {
         cout << "Repozitorium: " << ime << "\n";
@@ -157,9 +125,13 @@ public:
             }
         }
 
-        if(idx == -1) return;
+        if(idx == -1) {
+            return;
+        }
 
-        for(int i = idx; i < os_n - 1; i++) os[i] = os[i + 1];
+        for(int i = idx; i < os_n - 1; i++) {
+            os[i] = os[i + 1];
+        }
         os_n--;
     }
 
@@ -171,7 +143,18 @@ public:
             }
         }
 
-        os[os_n++] = nov;
+        OperativenSistem* tmp = new OperativenSistem[os_n + 1];
+        for(int i = 0; i < os_n; i++) {
+            tmp[i] = os[i];
+        }
+        tmp[os_n++] = nov;
+
+        delete [] os;
+        this->os = new OperativenSistem[os_n];
+        for(int i = 0; i < os_n; i++) {
+            this->os[i] = tmp[i];
+        }
+        delete [] tmp;
     }
 
     ~Repozitorium() {

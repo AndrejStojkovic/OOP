@@ -3,7 +3,6 @@
 #include<iostream>
 #include<cstring>
 using namespace std;
-
 #define MAX 25
 
 class StockRecord {
@@ -13,11 +12,19 @@ class StockRecord {
     double newPrice;
     int shares;
 
+    void copy_stock(const StockRecord& other) {
+        strcpy(this->id, other.id);
+        strcpy(this->company, other.company);
+        this->price = other.price;
+        this->newPrice = other.newPrice;
+        this->shares = other.shares;
+    }
+
 public:
     StockRecord() {
         strcpy(this->id, " ");
         strcpy(this->company, " ");
-        price = newPrice = shares = 0;
+        this->price = this->newPrice = this->shares = 0;
     }
 
     StockRecord(char* id, char* company, double price, int shares) {
@@ -27,23 +34,15 @@ public:
         this->shares = shares;
     }
 
-    StockRecord(const StockRecord& s) {
-        strcpy(this->id, s.id);
-        strcpy(this->company, s.company);
-        this->price = s.price;
-        this->newPrice = s.newPrice;
-        this->shares = s.shares;
+    StockRecord(const StockRecord& other) {
+        copy_stock(other);
     }
 
-    StockRecord& operator=(const StockRecord& that) {
-        if(this == &that) return *this;
-
-        strcpy(this->id, that.id);
-        strcpy(this->company, that.company);
-        this->price = that.price;
-        this->newPrice = that.newPrice;
-        this->shares = that.shares;
-
+    StockRecord& operator=(const StockRecord& other) {
+        if(this == &other) {
+            return *this;
+        }
+        copy_stock(other);
         return *this;
     }
 
@@ -52,20 +51,9 @@ public:
         return os;
     }
 
-    char* getID() { return id; }
-    void setID(char* id) { strcpy(this->id, id); }
-
-    char* getCompany() { return company; }
-    void setCompany(char* company) { strcpy(this->company, company); }
-
-    double getPrice() { return price; }
-    void setPrice(double price) { this->price = price; }
-
-    double getNewPrice() { return newPrice; }
-    void setNewPrice(double newPrice) { this->newPrice = newPrice; }
-
-    int getShares() { return shares; }
-    void setShares(int shares) { this->shares = shares; }
+    void setNewPrice(double newPrice) {
+        this->newPrice = newPrice;
+    }
 
     double value() const {
         return shares * newPrice;
@@ -84,11 +72,21 @@ class Client {
     StockRecord* companies;
     int len;
 
+    void copy_client(const Client& other) {
+        strcpy(this->name, other.name);
+        this->id = other.id;
+        this->companies = new StockRecord[other.len];
+        for(int i = 0; i < other.len; i++) {
+            this->companies[i] = other.companies[i];
+        }
+        this->len = other.len;
+    }
+
 public:
     Client() {
         strcpy(this->name, " ");
-        companies = new StockRecord[0];
-        id = len = 0;
+        this->companies = new StockRecord[0];
+        this->id = this->len = 0;
     }
 
     Client(char* name, int id) {
@@ -98,37 +96,31 @@ public:
         this->len = 0;
     }
 
-    Client(const Client& c) {
-        strcpy(this->name, c.name);
-        this->id = c.id;
-        this->companies = new StockRecord[c.len];
-        for(int i = 0; i < c.len; i++)
-            this->companies[i] = c.companies[i];
-        this->len = c.len;
+    Client(const Client& other) {
+        copy_client(other);
     }
 
-    Client& operator=(const Client& that) {
-        if(this == &that) return *this;
-
-        strcpy(this->name, that.name);
-        this->id = that.id;
+    Client& operator=(const Client& other) {
+        if(this == &other) {
+            return *this;
+        }
         delete [] this->companies;
-        this->companies = new StockRecord[that.len];
-        for(int i = 0; i < that.len; i++)
-            this->companies[i] = that.companies[i];
-        this->len = that.len;
-
+        copy_client(other);
         return *this;
     }
 
     Client& operator+=(const StockRecord& that) {
         StockRecord* tmp = new StockRecord[len + 1];
-        for(int i = 0; i < len; i++) tmp[i] = this->companies[i];
+        for(int i = 0; i < len; i++) {
+            tmp[i] = this->companies[i];
+        }
         tmp[len++] = that;
 
         delete [] companies;
         this->companies = new StockRecord[len];
-        for(int i = 0; i < len; i++) this->companies[i] = tmp[i];
+        for(int i = 0; i < len; i++) {
+            this->companies[i] = tmp[i];
+        }
         delete [] tmp;
 
         return *this;
@@ -142,41 +134,11 @@ public:
         return os;
     }
 
-    char* getName() {
-        return name;
-    }
-
-    void setName(char* name) {
-        strcpy(this->name, name);
-    }
-
-    int getID() {
-        return id;
-    }
-
-    void setID(int id) {
-        this->id = id;
-    }
-
-    StockRecord* getCompanies() {
-        return companies;
-    }
-
-    void setCompanies(StockRecord* companies) {
-        this->companies = companies;
-    }
-
-    int getLen() {
-        return len;
-    }
-
-    void setLen(int len) {
-        this->len = len;
-    }
-
     double totalValue() const {
         double s = 0;
-        for(int i = 0; i < len; i++) s += companies[i].value();
+        for(int i = 0; i < len; i++) {
+            s += companies[i].value();
+        }
         return s;
     }
 

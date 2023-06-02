@@ -34,7 +34,9 @@ void najeftina_ponuda(ITStore * it, int n) {
 
     for(int i = 0; i < n; i++) {
         for(int j = 0; j < it[i].n; j++) {
-            if(!it[i].lp[j].touch) continue;
+            if(!it[i].lp[j].touch) {
+                continue;
+            }
 
             if(!setVal) {
                 najeftina = it[i].lp[j].cena;

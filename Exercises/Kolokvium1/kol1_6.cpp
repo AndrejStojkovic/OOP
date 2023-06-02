@@ -22,7 +22,9 @@ void najkratkaRelacija(ZeleznickaStanica* zs, int n, char* grad) {
     int flag = 0;
 
     for(int i = 0; i < n; i++) {
-        if(strcmp(zs[i].grad, grad) != 0) continue;
+        if(strcmp(zs[i].grad, grad) != 0) {
+            continue;
+        }
 
         for(int j = 0; j < zs[i].vozovi_n; j++) {
             if(!flag) {
@@ -31,7 +33,9 @@ void najkratkaRelacija(ZeleznickaStanica* zs, int n, char* grad) {
                 flag = 1;
             }
 
-            if(zs[i].vozovi[j].km > najkratka) continue;
+            if(zs[i].vozovi[j].km > najkratka) {
+                continue;
+            }
 
             najkratka = zs[i].vozovi[j].km;
             strcpy(relacija, zs[i].vozovi[j].relacija);
@@ -58,6 +62,6 @@ int main() {
     cin >> grad;
 
     najkratkaRelacija(zStanica, n, grad);
-    
+
     return 0;
 }

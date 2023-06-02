@@ -9,11 +9,17 @@ class Patnik {
     int klasa;
     bool velosiped;
 
+    void copy_patnik(const Patnik& other) {
+        strcpy(this->ime, other.ime);
+        this->klasa = other.klasa;
+        this->velosiped = other.velosiped;
+    }
+
 public:
     Patnik() {
         strcpy(this->ime, " ");
-        klasa = 1;
-        velosiped = false;
+        this->klasa = 1;
+        this->velosiped = false;
     }
 
     Patnik(char* ime, int klasa, bool velosiped) {
@@ -22,19 +28,15 @@ public:
         this->velosiped = velosiped;
     }
 
-    Patnik(const Patnik& p) {
-        strcpy(this->ime, p.ime);
-        this->klasa = p.klasa;
-        this->velosiped = p.velosiped;
+    Patnik(const Patnik& other) {
+        copy_patnik(other);
     }
 
     Patnik& operator=(const Patnik& other) {
-        if(this == &other) return *this;
-
-        strcpy(this->ime, other.ime);
-        this->klasa = other.klasa;
-        this->velosiped = other.velosiped;
-
+        if(this == &other) {
+            return *this;
+        }
+        copy_patnik(other);
         return *this;
     }
 
@@ -43,28 +45,12 @@ public:
         return os;
     }
 
-    char* getIme() {
-        return ime;
-    }
-
-    void setIme(char* ime) {
-        strcpy(this->ime, ime);
-    }
-
     int getKlasa() const {
         return klasa;
     }
 
-    void setKlasa(int klasa) {
-        this->klasa = klasa;
-    }
-
     bool getVelosiped() const {
         return velosiped;
-    }
-
-    void setVelosiped(bool velosiped) {
-        this->velosiped = velosiped;
     }
 
     ~Patnik() { }
@@ -76,51 +62,59 @@ class Voz {
     int num;
     int velosipedi;
 
+    void copy_voz(const Voz& other) {
+        strcpy(this->destinacija, other.destinacija);
+        this->patnici = new Patnik[other.num];
+        for(int i = 0; i < other.num; i++) {
+            this->patnici[i] = other.patnici[i];
+        }
+        this->num = other.num;
+        this->velosipedi = other.velosipedi;
+    }
+
 public:
     Voz() {
         strcpy(this->destinacija, " ");
-        patnici = new Patnik[0];
-        num = velosipedi = 0;
+        this->patnici = nullptr;
+        this->num = this->velosipedi = 0;
     }
 
     Voz(char* destinacija, int velosipedi) {
         strcpy(this->destinacija, destinacija);
-        patnici = new Patnik[0];
-        num = 0;
+        this->patnici = nullptr;
+        this->num = 0;
         this->velosipedi = velosipedi;
     }
 
-    Voz(const Voz& v) {
-        strcpy(this->destinacija, v.destinacija);
-        this->patnici = new Patnik[v.num];
-        for(int i = 0; i < v.num; i++) this->patnici[i] = v.patnici[i];
-        this->num = v.num;
-        this->velosipedi = v.velosipedi;
+    Voz(const Voz& other) {
+        copy_voz(other);
     }
 
     Voz& operator=(const Voz& other) {
-        if(this == &other) return *this;
-
-        strcpy(this->destinacija, other.destinacija);
+        if(this == &other) {
+            return *this;
+        }
         delete [] this->patnici;
-        this->patnici = new Patnik[other.num];
-        for(int i = 0; i < other.num; i++) this->patnici[i] = other.patnici[i];
-        this->num = other.num;
-        this->velosipedi = other.velosipedi;
-
+        copy_voz(other);
         return *this;
     }
 
     Voz& operator+=(const Patnik& p) {
-        if(p.getVelosiped() && !velosipedi) return *this;
+        if(p.getVelosiped() && !velosipedi) {
+            return *this;
+        }
 
         Patnik* tmp = new Patnik[num + 1];
-        for(int i = 0; i < this->num; i++) tmp[i] = patnici[i];
-        tmp[this->num++] = p;
+        for(int i = 0; i < this->num; i++) {
+            tmp[i] = patnici[i];
+        }
+        tmp[num++] = p;
 
         delete [] patnici;
         this->patnici = new Patnik[num];
-        for(int i = 0; i < num; i++) patnici[i] = tmp[i];
+        for(int i = 0; i < num; i++) {
+            patnici[i] = tmp[i];
+        }
         delete [] tmp;
 
         return *this;
@@ -149,15 +143,23 @@ public:
         int mesto1 = 0, mesto2 = 0, bc = velosipedi;
         for(int i = 0; i < num; i++) {
             if(patnici[i].getVelosiped() && patnici[i].getKlasa() == 1) {
-                if(bc) bc--;
-                else mesto1++;
+                if(bc) {
+                    bc--;
+                }
+                else {
+                    mesto1++;
+                }
             }
         }
 
         for(int i = 0; i < num; i++) {
             if(patnici[i].getVelosiped() && patnici[i].getKlasa() == 2) {
-                if(bc) bc--;
-                else mesto2++;
+                if(bc) {
+                    bc--;
+                }
+                else {
+                    mesto2++;
+                }
             }
         }
 

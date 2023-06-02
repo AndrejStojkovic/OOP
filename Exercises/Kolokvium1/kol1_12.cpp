@@ -10,13 +10,20 @@ class Pica {
     char* sostojki;
     int namaluvanje;
 
+    void copy_pica(const Pica& other) {
+        strcpy(this->ime, other.ime);
+        this->cena = other.cena;
+        this->sostojki = new char[strlen(other.sostojki) + 1];
+        strcpy(this->sostojki, other.sostojki);
+        this->namaluvanje = other.namaluvanje;
+    }
+
 public:
     Pica() {
-        strcpy(this->ime, " ");
+        strcpy(this->ime, "pizaa");
         this->cena = 0;
-        this->sostojki = new char[1];
-        strcpy(this->sostojki, " ");
-        namaluvanje = 0;
+        this->sostojki = nullptr;
+        this->namaluvanje = 0;
     }
 
     Pica(char* ime, int cena, char* sostojki, int namaluvanje) {
@@ -27,51 +34,33 @@ public:
         this->namaluvanje = namaluvanje;
     }
 
-    Pica(const Pica& p) {
-        strcpy(this->ime, p.ime);
-        this->cena = p.cena;
-        this->sostojki = new char[strlen(p.sostojki) + 1];
-        strcpy(this->sostojki, p.sostojki);
-        this->namaluvanje = p.namaluvanje;
+    Pica(const Pica& other) {
+        copy_pica(other);
     }
 
-    Pica& operator=(const Pica& p) {
-        if(this == &p) return *this;
-
-        strcpy(this->ime, p.ime);
-        this->cena = p.cena;
-
-        delete [] this->sostojki;
-        this->sostojki = new char[strlen(p.sostojki) + 1];
-        strcpy(this->sostojki, p.sostojki);
-
-        this->namaluvanje = p.namaluvanje;
-
+    Pica& operator=(const Pica& other) {
+        if(this == &other) {
+            return *this;
+        }
+        delete [] sostojki;
+        copy_pica(other);
         return *this;
     }
 
-    char* getIme() { return ime; }
-    void setIme(const char* ime) { strcpy(this->ime, ime); }
-
-    int getCena() { return cena; }
-    void setCena(const int cena) { this->cena = cena; }
-
-    char* getSostojki() { return sostojki; }
-    void setSostojki(const char* sostojki) {
-        delete [] this->sostojki;
-        this->sostojki = new char[strlen(sostojki) + 1];
-        strcpy(this->sostojki, sostojki);
+    int getCena() {
+        return cena;
     }
 
-    int getNamaluvanje() { return namaluvanje; }
-    void setNamaluvanje(const int namaluvanje) { this->namaluvanje = namaluvanje; }
+    int getNamaluvanje() {
+        return namaluvanje;
+    }
 
     void pecati() {
         cout << ime << " - " << sostojki << ", " << cena;
     }
 
     bool istiSe(const Pica& p) {
-        return strcmp(this->sostojki, p.sostojki) == 0;
+        return !strcmp(this->sostojki, p.sostojki);
     }
 
     ~Pica() {
@@ -83,6 +72,15 @@ class Picerija {
     char ime[15];
     Pica* pici;
     int num;
+
+    void copy_picerija(const Picerija& other) {
+        strcpy(ime, other.ime);
+        num = other.num;
+        pici = new Pica[num];
+        for (int i = 0; i < num; i++) {
+            pici[i] = other.pici[i];
+        }
+    }
 
 public:
     Picerija() {
@@ -97,73 +95,40 @@ public:
         num = 0;
     }
 
-    Picerija(const char* ime, Pica* pici, const int num) {
-        strncpy(this->ime, ime, 14);
-        this->ime[14] = 0;
-        this->num = num;
+    Picerija(const Picerija &other) {
+        copy_picerija(other);
+    }
 
-        this->pici = new Pica[num];
-
-        for(int i = 0; i < num; i++) {
-            this->pici[i] = pici[i];
+    Picerija& operator=(const Picerija& other) {
+        if(this == &other) {
+            return *this;
         }
-    }
-
-    Picerija(const Picerija &p) {
-        strcpy(ime, p.ime);
-        num = p.num;
-        pici = new Pica[num];
-        for (int i = 0; i < num; i++)
-            pici[i] = p.pici[i];
-    }
-
-    Picerija& operator=(const Picerija& p) {
-        if(this == &p) return *this;
-
-        strcpy(this->ime, p.ime);
-        this->num = p.num;
-
         delete [] this->pici;
-        this->pici = new Pica[num];
-
-        for(int i = 0; i < num; i++)
-            pici[i] = p.pici[i];
-
+        copy_picerija(other);
         return *this;
     }
 
     Picerija& operator+=(Pica &p) {
-        bool flag = false;
-
         for(int i = 0; i < num; i++) {
-            if(pici[i].istiSe(p)) flag = true;
+            if(pici[i].istiSe(p)) {
+                return *this;
+            }
         }
 
-        if(flag) return *this;
+        Pica* tmp = new Pica[num + 1];
+        for(int i = 0; i < num; i++) {
+            tmp[i] = pici[i];
+        }
+        tmp[num++] = p;
 
-        Pica* temp = new Pica[num + 1];
-        for(int i = 0; i < num; i++) temp[i] = pici[i];
-        temp[num++] = p;
         delete [] this->pici;
-        this->pici = temp;
+        this->pici = new Pica[num];
+        for(int i = 0; i < num; i++) {
+            pici[i] = tmp[i];
+        }
+        delete [] tmp;
 
         return *this;
-    }
-
-    void dodadi(Pica &p) {
-        bool flag = false;
-
-        for(int i = 0; i < num; i++) {
-            if(pici[i].istiSe(p)) flag = true;
-        }
-
-        if(flag) return;
-
-        Pica* temp = new Pica[num + 1];
-        for(int i = 0; i < num; i++) temp[i] = pici[i];
-        temp[num++] = p;
-        delete [] this->pici;
-        this->pici = temp;
     }
 
     char* getIme() {
@@ -174,25 +139,8 @@ public:
         strcpy(this->ime, ime);
     }
 
-    Pica* getPici() {
-        return pici;
-    }
-
-    void setPici(Pica* pici) {
-        this->pici = pici;
-    }
-
-    int getNum() {
-        return num;
-    }
-
-    void setNum(int num) {
-        this->num = num;
-    }
-
     void piciNaPromocija() {
         for(int i = 0; i < num; i++) {
-            //cout << "-" << pici[i].getIme() << " - " << pici[i].getCena() << ", " << pici[i].getNamaluvanje() << "\n";
             if(pici[i].getNamaluvanje() != 0) {
                 pici[i].pecati();
                 cout << " " << pici[i].getCena() * (1 - pici[i].getNamaluvanje() / 100.0) << "\n";

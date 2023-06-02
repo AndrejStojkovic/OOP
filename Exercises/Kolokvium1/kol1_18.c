@@ -18,20 +18,21 @@ typedef struct skicenter_t {
 int kapacitet(SkiCenter sc) {
     int s = 0;
 
-    for(int i = 0; i < sc.br_lifts; i++)
-        if(sc.niza[i].voUpotreba)
+    for(int i = 0; i < sc.br_lifts; i++) {
+        if(sc.niza[i].voUpotreba) {
             s += sc.niza[i].max_skijaci;
+        }
+    }
 
     return s;
 }
 
 void najgolemKapacitet(SkiCenter* sc, int n) {
-    int k, v, idx;
-    k = v = idx = 0;
+    int k = 0, v = 0, idx = 0;
 
     for(int i = 0; i < n; i++) {
         k = kapacitet(sc[i]);
-        if((k > v) || (k == v && sc[i].br_lifts > sc[idx].br_lifts)) {
+        if(k > v || (k == v && sc[i].br_lifts > sc[idx].br_lifts)) {
             v = k;
             idx = i;
         }

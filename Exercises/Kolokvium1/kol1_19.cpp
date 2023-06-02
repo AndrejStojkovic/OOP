@@ -10,11 +10,17 @@ class IceCream {
     float price;
     int discount;
 
+    void copy_icecream(const IceCream& other) {
+        this->name = new char[strlen(other.name) + 1];
+        strcpy(this->name, other.name);
+        strcpy(this->ingr, other.ingr);
+        this->price = other.price;
+        this->discount = other.discount;
+    }
+
 public:
     IceCream() {
-        this->name = new char[2];
-        strcpy(this->name, " ");
-        strcpy(this->ingr, " ");
+        this->name = nullptr;
         this->price = 0;
         this->discount = 0;
     }
@@ -28,30 +34,23 @@ public:
     }
 
     IceCream(const IceCream& other) {
-        this->name = new char[strlen(other.name) + 1];
-        strcpy(this->name, other.name);
-        strcpy(this->ingr, other.ingr);
-        this->price = other.price;
-        this->discount = other.discount;
+        copy_icecream(other);
     }
 
     IceCream& operator=(const IceCream& other) {
-        if(this == &other) return *this;
-
+        if(this == &other) {
+            return *this;
+        }
         delete [] this->name;
-        this->name = new char[strlen(other.name) + 1];
-        strcpy(this->name, other.name);
-        strcpy(this->ingr, other.ingr);
-        this->price = other.price;
-        this->discount = other.discount;
-
+        copy_icecream(other);
         return *this;
     }
 
     friend ostream& operator<<(ostream& os, const IceCream& obj) {
         os << obj.name << ": " << obj.ingr << " " << obj.price << " ";
-        if(obj.discount != 0)
+        if(obj.discount != 0) {
             os << "(" << obj.price - ((obj.discount / 100.0) * obj.price) << ")";
+        }
         return os;
     }
 
@@ -70,20 +69,14 @@ public:
         return *this;
     }
 
-    char* getName() { return name; }
     void setName(char* name) {
         this->name = new char[strlen(name) + 1];
         strcpy(this->name, name);
     }
 
-    char* getIngredient() { return ingr; }
-    void setIngredient(char* ingr) { strcpy(this->ingr, ingr); }
-
-    float getPrice() { return price; }
-    void setPrice(float price) { this->price = price; }
-
-    int getDiscount() { return discount; }
-    void setDiscount(int discount) { this->discount = discount; }
+    void setDiscount(int discount) {
+        this->discount = discount;
+    }
 
     ~IceCream() {
         delete [] name;
@@ -95,16 +88,25 @@ class IceCreamShop {
     IceCream* iceCreams;
     int num;
 
+    void copy_shop(const IceCreamShop& other) {
+        strcpy(this->name, other.name);
+        iceCreams = new IceCream[other.num];
+        for(int i = 0; i < other.num; i++) {
+            this->iceCreams[i] = other.iceCreams[i];
+        }
+        this->num = other.num;
+    }
+
 public:
     IceCreamShop() {
         strcpy(this->name, " ");
-        iceCreams = new IceCream[0];
+        iceCreams = nullptr;
         this->num = 0;
     }
 
     IceCreamShop(char* name) {
         strcpy(this->name, name);
-        iceCreams = new IceCream[0];
+        iceCreams = nullptr;
         this->num = 0;
     }
 
@@ -115,49 +117,42 @@ public:
     }
 
     IceCreamShop(const IceCreamShop& other) {
-        strcpy(this->name, other.name);
-        iceCreams = new IceCream[other.num];
-        for(int i = 0; i < other.num; i++) this->iceCreams[i] = other.iceCreams[i];
-        this->num = other.num;
+        copy_shop(other);
     }
 
     IceCreamShop& operator=(const IceCreamShop& other) {
-        if(this == &other) return *this;
-
-        strcpy(this->name, other.name);
+        if(this == &other) {
+            return *this;
+        }
         delete [] this->iceCreams;
-        this->iceCreams = new IceCream[other.num];
-        for(int i = 0; i < other.num; i++) this->iceCreams[i] = other.iceCreams[i];
-        this->num = other.num;
-
+        copy_shop(other);
         return *this;
     }
 
     IceCreamShop& operator+=(const IceCream& obj) {
         IceCream* tmp = new IceCream[num + 1];
-        for(int i = 0; i < num; i++) tmp[i] = this->iceCreams[i];
+        for(int i = 0; i < num; i++) {
+            tmp[i] = this->iceCreams[i];
+        }
         tmp[num++] = obj;
 
         delete [] iceCreams;
-        iceCreams = new IceCream[num];
-        for(int i = 0; i < num; i++) iceCreams[i] = tmp[i];
+        this->iceCreams = new IceCream[num];
+        for(int i = 0; i < num; i++) {
+            this->iceCreams[i] = tmp[i];
+        }
+        delete [] tmp;
 
         return *this;
     }
 
     friend ostream& operator<<(ostream& os, const IceCreamShop& obj) {
         os << obj.name << "\n";
-        for(int i = 0; i < obj.num; i++) os << obj.iceCreams[i] << "\n";
+        for(int i = 0; i < obj.num; i++) {
+            os << obj.iceCreams[i] << "\n";
+        }
         return os;
     }
-
-    char* getName() { return name; }
-    void setName(char* name) { strcpy(this->name, name); }
-
-    IceCream* getIceCreams() { return iceCreams; }
-
-    int getNum() { return num; }
-    void setNum(int num) { this->num = num;}
 
     ~IceCreamShop() {
         delete [] iceCreams;

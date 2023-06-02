@@ -9,10 +9,16 @@ class Ucesnik {
     bool pol;
     int vozrast;
 
+    void copy_ucesnik(const Ucesnik& other) {
+        this->ime = new char[strlen(other.ime) + 1];
+        strcpy(this->ime, other.ime);
+        this->pol = other.pol;
+        this->vozrast = other.vozrast;
+    }
+
 public:
     Ucesnik() {
-        this->ime = new char[0];
-        strcpy(this->ime, " ");
+        this->ime = nullptr;
         this->pol = false;
         this->vozrast = 0;
     }
@@ -25,21 +31,15 @@ public:
     }
 
     Ucesnik(const Ucesnik& other) {
-        this->ime = new char[strlen(other.ime) + 1];
-        strcpy(this->ime, other.ime);
-        this->pol = other.pol;
-        this->vozrast = other.vozrast;
+        copy_ucesnik(other);
     }
 
     Ucesnik& operator=(const Ucesnik& other) {
-        if(this == &other) return *this;
-
+        if(this == &other) {
+            return *this;
+        }
         delete [] this->ime;
-        this->ime = new char[strlen(other.ime) + 1];
-        strcpy(this->ime, other.ime);
-        this->pol = other.pol;
-        this->vozrast = other.vozrast;
-
+        copy_ucesnik(other);
         return *this;
     }
 
@@ -52,28 +52,8 @@ public:
         return os;
     }
 
-    char* getIme() {
-        return ime;
-    }
-
-    void setIme(char* ime) {
-        strcpy(this->ime, ime);
-    }
-
-    bool getPol() {
-        return pol;
-    }
-
-    void setPol(bool pol) {
-        this->pol = pol;
-    }
-
     int getVozrast() {
         return vozrast;
-    }
-
-    void setVozrast(int vozrast) {
-        this->vozrast = vozrast;
     }
 
     ~Ucesnik() {
@@ -86,65 +66,63 @@ class Maraton {
     Ucesnik* ucesnici;
     int num;
 
+    void copy_maraton(const Maraton& other) {
+        strcpy(this->lokacija, other.lokacija);
+        this->ucesnici = new Ucesnik[other.num];
+        for(int i = 0; i < other.num; i++) {
+            this->ucesnici[i] = other.ucesnici[i];
+        }
+        this->num = other.num;
+    }
+
 public:
     Maraton() {
         strcpy(this->lokacija, " ");
-        ucesnici = new Ucesnik[0];
+        ucesnici = nullptr;
         num = 0;
     }
 
     Maraton(char* lokacija) {
-        strcpy(this->lokacija, " ");
-        ucesnici = new Ucesnik[0];
+        strcpy(this->lokacija, lokacija);
+        ucesnici = nullptr;
         num = 0;
     }
 
     Maraton(const Maraton& other) {
-        strcpy(this->lokacija, other.lokacija);
-        this->ucesnici = new Ucesnik[other.num];
-        for(int i = 0; i < other.num; i++) this->ucesnici[i] = other.ucesnici[i];
-        this->num = other.num;
+        copy_maraton(other);
     }
 
     Maraton& operator=(const Maraton& other) {
-        if(this == &other) return *this;
-
-        strcpy(this->lokacija, other.lokacija);
+        if(this == &other) {
+            return *this;
+        }
         delete [] this->ucesnici;
-        this->ucesnici = new Ucesnik[other.num];
-        for(int i = 0; i < other.num; i++) this->ucesnici[i] = other.ucesnici[i];
-        this->num = other.num;
-
+        copy_maraton(other);
         return *this;
     }
 
     Maraton& operator+=(const Ucesnik& other) {
         Ucesnik* tmp = new Ucesnik[num + 1];
-        for(int i = 0; i < num; i++) tmp[i] = this->ucesnici[i];
+        for(int i = 0; i < num; i++) {
+            tmp[i] = this->ucesnici[i];
+        }
         tmp[num++] = other;
 
         delete [] ucesnici;
-
         this->ucesnici = new Ucesnik[num];
-        for(int i = 0; i < num; i++) this->ucesnici[i] = tmp[i];
+        for(int i = 0; i < num; i++) {
+            this->ucesnici[i] = tmp[i];
+        }
+        delete [] tmp;
 
         return *this;
     }
 
-    char* getLokacija() { return lokacija; }
-    void setLokacija(char* lokacija) { strcpy(this->lokacija, lokacija); }
-
-    Ucesnik* getUcesnici() { return ucesnici; }
-    void setUcesnici(Ucesnik* ucesnici) { this->ucesnici = ucesnici; }
-
-    int getNum() { return num; }
-    void setNum(int num) { this->num = num; }
-
     float prosecnoVozrast() {
         float s = 0;
-        for(int i = 0; i < num; i++)
+        for(int i = 0; i < num; i++) {
             s += ucesnici[i].getVozrast();
-
+        }
         return s / (float)num;
     }
 

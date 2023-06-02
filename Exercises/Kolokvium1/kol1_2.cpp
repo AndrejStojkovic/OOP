@@ -2,12 +2,19 @@
 
 #include <iostream>
 using namespace std;
-
 #define MAX 25
 
 class List {
     int* niza;
     int len;
+
+    void copy_list(const List& other) {
+        this->niza = new int[other.len];
+        for(int i = 0; i < other.len; i++) {
+            this->niza[i] = other.niza[i];
+        }
+        this->len = other.len;
+    }
 
 public:
     List() {
@@ -15,61 +22,44 @@ public:
         len = 0;
     }
 
-    List(const int* niza, int len) {
+    List(int* niza, int len) {
         this->niza = new int[len];
-        for(int i = 0; i < len; i++)
+        for(int i = 0; i < len; i++) {
             this->niza[i] = niza[i];
+        }
         this->len = len;
     }
 
-    List(const List& cpy) {
-        this->niza = new int[cpy.len];
-        for(int i = 0; i < cpy.len; i++)
-            this->niza[i] = cpy.niza[i];
-        this->len = cpy.len;
+    List(const List& other) {
+        copy_list(other);
     }
 
-    List& operator=(const List& that) {
-        if(this == &that) return *this;
-
+    List& operator=(const List& other) {
+        if(this == &other) {
+            return *this;
+        }
         delete [] this->niza;
-        this->niza = new int[that.len];
-
-        for(int i = 0; i < that.len; i++)
-            this->niza[i] = that.niza[i];
-
-        this->len = that.len;
-
+        copy_list(other);
         return *this;
-    }
-
-    int* getNiza() {
-        return niza;
-    }
-
-    void setNiza(int* niza) {
-        this->niza = niza;
     }
 
     int getLen() {
         return len;
     }
 
-    void setLen(int len) {
-        this->len = len;
-    }
-
     void pecati() {
         cout << len << ": ";
-        for(int i = 0; i < len; i++)
+        for(int i = 0; i < len; i++) {
             cout << niza[i] << " ";
-
+        }
         cout << "sum: " << sum() << " average: " << average() << "\n";
     }
 
     int sum() {
         int s = 0;
-        for(int i = 0; i < len; i++) s += niza[i];
+        for(int i = 0; i < len; i++) {
+            s += niza[i];
+        }
         return s;
     }
 
@@ -87,40 +77,30 @@ class ListContainer {
     int len;
     int obidi;
 
+    void copy_container(const ListContainer& other) {
+        this->lists = new List[MAX];
+        for(int i = 0; i < other.len; i++)
+            this->lists[i] = other.lists[i];
+        this->len = other.len;
+        this->obidi = other.obidi;
+    }
+
 public:
     ListContainer() {
-        lists = new List[MAX];
-        len = obidi = 0;
-    }
-
-    ListContainer(List* lists, int len, int obidi) {
         this->lists = new List[MAX];
-        for(int i = 0; i < len; i++)
-            this->lists[i] = lists[i];
-        this->len = len;
-        this->obidi = obidi;
+        this->len = this->obidi = 0;
     }
 
-    ListContainer(const ListContainer& cpy) {
-        this->lists = new List[MAX];
-        for(int i = 0; i < cpy.len; i++)
-            this->lists[i] = cpy.lists[i];
-        this->len = cpy.len;
-        this->obidi = cpy.obidi;
+    ListContainer(const ListContainer& other) {
+        copy_container(other);
     }
 
-    ListContainer& operator=(const ListContainer& that) {
-        if(this == &that) return *this;
-
+    ListContainer& operator=(const ListContainer& other) {
+        if(this == &other) {
+            return *this;
+        }
         delete [] lists;
-        this->lists = new List[MAX];
-
-        for(int i = 0; i < that.len; i++)
-            this->lists[i] = that.lists[i];
-
-        this->len = that.len;
-        this->obidi = that.obidi;
-
+        copy_container(other);
         return *this;
     }
 
@@ -136,7 +116,7 @@ public:
         }
 
         cout << "Sum: " << sum() << " Average: " << average() << "\n";
-        cout << "Successful attempts: " << len << " Failed attempts: " << obidi - len << "\n";
+        cout << "Successful attempts: " << len << " Failed attempts: " << (obidi - len) << "\n";
     }
 
     void addNewList(List l) {
@@ -153,13 +133,17 @@ public:
 
     int sum() {
         int s = 0;
-        for(int i = 0; i < len; i++) s += lists[i].sum();
+        for(int i = 0; i < len; i++) {
+            s += lists[i].sum();
+        }
         return s;
     }
 
     double average() {
         int avg = 0;
-        for(int i = 0; i < len; i++) avg += lists[i].getLen();
+        for(int i = 0; i < len; i++) {
+            avg += lists[i].getLen();
+        }
         return (double)sum() / avg;
     }
 
