@@ -20,9 +20,10 @@ class Pica {
 
 public:
     Pica() {
-        strcpy(this->ime, "pizaa");
+        strcpy(this->ime, "pizza");
         this->cena = 0;
-        this->sostojki = nullptr;
+        this->sostojki = new char[10];
+        strcpy(this->sostojki, "sostojki");
         this->namaluvanje = 0;
     }
 
@@ -84,7 +85,7 @@ class Picerija {
 
 public:
     Picerija() {
-        strcpy(this->ime, " ");
+        strcpy(this->ime, "picerija");
         pici = nullptr;
         num = 0;
     }

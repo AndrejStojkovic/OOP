@@ -16,8 +16,8 @@ class Zichara {
 
 public:
     Zichara() {
-        this->mesto = new char[2];
-        strcpy(this->mesto, " ");
+        this->mesto = new char[6];
+        strcpy(this->mesto, "mesto");
         this->cena = 0;
     }
 
@@ -66,6 +66,7 @@ class PlaninarskiDom {
 public:
     PlaninarskiDom() {
         this->ceni[0] = this->ceni[1] = 0;
+        strcpy(this->ime, "dom");
         this->klasa = 'F';
         this->imaZichara = false;
         this->zichara = nullptr;

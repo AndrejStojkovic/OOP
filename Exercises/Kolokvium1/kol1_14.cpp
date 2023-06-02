@@ -24,9 +24,11 @@ class File {
 
 public:
     File() {
-        this->name = nullptr;
+        this->name = new char[5];
+        strcpy(this->name, "file");
         this->ext = txt;
-        this->owner = nullptr;
+        this->owner = new char[6];
+        strcpy(this->owner, "owner");
         this->size = 0;
     }
 
@@ -89,8 +91,8 @@ class Folder {
 
 public:
     Folder() {
-        this->name = new char[1];
-        strcpy(this->name, " ");
+        this->name = new char[8];
+        strcpy(this->name, "folder");
         files = nullptr;
         num = 0;
     }

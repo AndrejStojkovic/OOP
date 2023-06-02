@@ -22,8 +22,8 @@ class StockRecord {
 
 public:
     StockRecord() {
-        strcpy(this->id, " ");
-        strcpy(this->company, " ");
+        strcpy(this->id, "id");
+        strcpy(this->company, "company");
         this->price = this->newPrice = this->shares = 0;
     }
 
@@ -84,7 +84,7 @@ class Client {
 
 public:
     Client() {
-        strcpy(this->name, " ");
+        strcpy(this->name, "client");
         this->companies = new StockRecord[0];
         this->id = this->len = 0;
     }

@@ -22,7 +22,8 @@ class OperativenSistem {
 
 public:
     OperativenSistem() {
-        this->ime = nullptr;
+        this->ime = new char[4];
+        strcpy(this->ime, "os");
         this->verzija = 0.1;
         this->tip = LINUX;
         this->golemina = 1.0;
@@ -86,6 +87,7 @@ class Repozitorium {
 
 public:
     Repozitorium() {
+        strcpy(this->ime, "repo");
         os = nullptr;
         os_n = 0;
     }

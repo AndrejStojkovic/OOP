@@ -20,7 +20,8 @@ class Pesna {
 
 public:
     Pesna() {
-        this->name = nullptr;
+        this->name = new char[5];
+        strcpy(this->name, "name");
         this->minutes = 0;
         this->type = POP;
     }

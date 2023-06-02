@@ -18,7 +18,8 @@ class Ucesnik {
 
 public:
     Ucesnik() {
-        this->ime = nullptr;
+        this->ime = new char[5];
+        strcpy(this->ime, "ime");
         this->pol = false;
         this->vozrast = 0;
     }
@@ -77,7 +78,7 @@ class Maraton {
 
 public:
     Maraton() {
-        strcpy(this->lokacija, " ");
+        strcpy(this->lokacija, "lokacija");
         ucesnici = nullptr;
         num = 0;
     }

@@ -17,7 +17,7 @@ class Patnik {
 
 public:
     Patnik() {
-        strcpy(this->ime, " ");
+        strcpy(this->ime, "ime");
         this->klasa = 1;
         this->velosiped = false;
     }
@@ -74,7 +74,7 @@ class Voz {
 
 public:
     Voz() {
-        strcpy(this->destinacija, " ");
+        strcpy(this->destinacija, "destinacija");
         this->patnici = nullptr;
         this->num = this->velosipedi = 0;
     }

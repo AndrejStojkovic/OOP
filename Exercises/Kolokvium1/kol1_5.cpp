@@ -91,8 +91,8 @@ class Magacin {
 
 public:
     Magacin() {
-        strcpy(this->name, " ");
-        strcpy(this->location, " ");
+        strcpy(this->name, "name");
+        strcpy(this->location, "location");
         this->guitars = nullptr;
         this->num = this->year = 0;
     }

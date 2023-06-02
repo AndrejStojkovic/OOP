@@ -20,7 +20,8 @@ class IceCream {
 
 public:
     IceCream() {
-        this->name = nullptr;
+        this->name = new char[5];
+        strcpy(this->name, "name");
         this->price = 0;
         this->discount = 0;
     }
@@ -99,7 +100,7 @@ class IceCreamShop {
 
 public:
     IceCreamShop() {
-        strcpy(this->name, " ");
+        strcpy(this->name, "name");
         iceCreams = nullptr;
         this->num = 0;
     }
