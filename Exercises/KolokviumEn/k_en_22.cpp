@@ -81,12 +81,12 @@ public:
     }
 
     String& operator+=(String& string) {
-        if(getSize() + string.getLength() > capacity) {
+        if(getSize() + string.getLength() + 2 > capacity) {
             capacity *= 2;
         }
 
-        if(getSize() + string.getLength() > capacity) {
-            capacity += (getSize() + string.getLength() - capacity);
+        if(getSize() + string.getLength() + 2 > capacity) {
+            capacity = capacity / 2 + string.getLength();
         }
 
         int newSize = len + 1;
