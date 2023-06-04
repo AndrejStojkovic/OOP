@@ -1,280 +1,229 @@
 // En - 11
 
+// En - 12 (text not right, needs to be fixed)
+
 #include <iostream>
 #include <cstring>
 using namespace std;
 
-class InvalidDiscount {
-    int discount;
+class InvestmentPlan {
+protected:
+    char name[80];
+    double plan;
+    double shares;
+    bool currentDay;
+
+private:
+    void copy_plan(const InvestmentPlan& other) {
+        strcpy(this->name, other.name);
+        this->plan = other.plan;
+        this->shares = other.shares;
+        this->currentDay = other.currentDay;
+    }
 
 public:
-    InvalidDiscount(int discount) {
-        this->discount = discount;
+    InvestmentPlan() {
+        strcpy(this->name, "name");
+        this->plan = this->shares = 0;
+        this->currentDay = 0;
     }
 
-    void message() {
-        cout << "Invalid discount value: " << discount << "\n";
-    }
-};
-
-class IceCream {
-    char* name;
-    char ingr[100];
-    float price;
-    int discount;
-
-public:
-    IceCream() {
-        this->name = new char[2];
-        strcpy(this->name, " ");
-        strcpy(this->ingr, " ");
-        this->price = 0;
-        this->discount = 0;
-    }
-
-    IceCream(char* name, char* ingr, float price, int discount=0) {
-        this->name = new char[strlen(name) + 1];
+    InvestmentPlan(char* name, double plan, double shares, bool currentDay) {
         strcpy(this->name, name);
-        strcpy(this->ingr, ingr);
-        this->price = price;
-        this->discount = discount;
+        this->plan = plan;
+        this->shares = shares;
+        this->currentDay = currentDay;
     }
 
-    IceCream(const IceCream& other) {
-        this->name = new char[strlen(other.name) + 1];
-        strcpy(this->name, other.name);
-        strcpy(this->ingr, other.ingr);
-        this->price = other.price;
-        this->discount = other.discount;
+    InvestmentPlan(const InvestmentPlan& other) {
+        copy_plan(other);
     }
 
-    IceCream& operator=(const IceCream& other) {
-        if(this == &other) return *this;
-
-        delete [] this->name;
-        this->name = new char[strlen(other.name) + 1];
-        strcpy(this->name, other.name);
-        strcpy(this->ingr, other.ingr);
-        this->price = other.price;
-        this->discount = other.discount;
-
-        return *this;
-    }
-
-    friend ostream& operator<<(ostream& os, const IceCream& obj) {
-        os << obj.name << ": " << obj.ingr << " " << obj.price << " ";
-        if(obj.discount != 0)
-            os << "(" << obj.price - ((obj.discount / 100.0) * obj.price) << ")";
-        return os;
-    }
-
-    IceCream& operator++() {
-        discount += 5;
-        return *this;
-    }
-
-    IceCream operator+(const char* add) {
-        char* tmp = new char[strlen(name) + strlen(add) + 1];
-        strcat(tmp, name);
-        strcat(tmp, " + ");
-        strcat(tmp, add);
-        strcpy(this->name, tmp);
-        price += 10;
-        return *this;
-    }
-
-    void setName(char* name) {
-        this->name = new char[strlen(name) + 1];
-        strcpy(this->name, name);
-    }
-
-    void setDiscount(int discount) {
-        if(discount < 0 || discount > 100) {
-            throw InvalidDiscount(discount);
+    InvestmentPlan& operator=(const InvestmentPlan& other) {
+        if(this == &other) {
+            return *this;
         }
-        this->discount = discount;
+        copy_plan(other);
+        return *this;
     }
 
-    ~IceCream() {
-        delete [] name;
+    double getPlan() {
+        return plan;
     }
+
+    double getShares() {
+        return shares;
+    }
+
+    bool isNew() {
+        return currentDay;
+    }
+
+    ~InvestmentPlan() { }
 };
 
-class IceCreamShop {
+class InvestmentFund {
     char name[50];
-    IceCream* iceCreams;
-    int num;
+    InvestmentPlan* plans;
+    int n;
+    double price;
+
+    void copy_fund(const InvestmentFund& other) {
+        strcpy(this->name, other.name);
+        this->n = other.n;
+        this->plans = new InvestmentPlan[other.n];
+        for(int i = 0; i < other.n; i++) {
+            this->plans[i] = other.plans[i];
+        }
+        this->price = other.price;
+    }
 
 public:
-    IceCreamShop() {
-        strcpy(this->name, " ");
-        iceCreams = new IceCream[0];
-        this->num = 0;
+    InvestmentFund() {
+        strcpy(this->name, "name");
+        this->plans = nullptr;
+        this->n = 0;
+        this->price = 0;
     }
 
-    IceCreamShop(char* name) {
+    InvestmentFund(char* name, InvestmentPlan* plans, int n, double price) {
         strcpy(this->name, name);
-        iceCreams = new IceCream[0];
-        this->num = 0;
+        this->plans = new InvestmentPlan[n];
+        for(int i = 0; i < n; i++) {
+            this->plans[i] = plans[i];
+        }
+        this->n = n;
+        this->price = price;
     }
 
-    IceCreamShop(char* name, int num) {
-        strcpy(this->name, name);
-        iceCreams = new IceCream[num];
-        this->num = num;
+    InvestmentFund(const InvestmentFund& other) {
+        copy_fund(other);
     }
 
-    IceCreamShop(const IceCreamShop& other) {
-        strcpy(this->name, other.name);
-        iceCreams = new IceCream[other.num];
-        for(int i = 0; i < other.num; i++) this->iceCreams[i] = other.iceCreams[i];
-        this->num = other.num;
-    }
-
-    IceCreamShop& operator=(const IceCreamShop& other) {
-        if(this == &other) return *this;
-
-        strcpy(this->name, other.name);
-        delete [] this->iceCreams;
-        this->iceCreams = new IceCream[other.num];
-        for(int i = 0; i < other.num; i++) this->iceCreams[i] = other.iceCreams[i];
-        this->num = other.num;
-
+    InvestmentFund& operator=(const InvestmentFund& other) {
+        if(this == &other) {
+            return *this;
+        }
+        delete [] plans;
+        copy_fund(other);
         return *this;
     }
 
-    IceCreamShop& operator+=(const IceCream& obj) {
-        IceCream* tmp = new IceCream[num + 1];
-        for(int i = 0; i < num; i++) tmp[i] = this->iceCreams[i];
-        tmp[num++] = obj;
-
-        delete [] iceCreams;
-        iceCreams = new IceCream[num];
-        for(int i = 0; i < num; i++) iceCreams[i] = tmp[i];
-
-        return *this;
+    double totalSum() {
+        long double s = 0;
+        for(int i = 0; i < n; i++) {
+            s += plans[i].getPlan();
+        }
+        return s;
     }
 
-    friend ostream& operator<<(ostream& os, const IceCreamShop& obj) {
-        os << obj.name << "\n";
-        for(int i = 0; i < obj.num; i++) os << obj.iceCreams[i] << "\n";
-        return os;
+    double newTotalSum() {
+        double s = 0;
+        for(int i = 0; i < n; i++) {
+            if(plans[i].isNew()) {
+                s += plans[i].getPlan();
+            }
+        }
+        return s;
     }
 
-    ~IceCreamShop() {
-        delete [] iceCreams;
+    virtual double profit() = 0;
+
+    virtual ~InvestmentFund() {
+        delete [] plans;
     }
 };
 
-int main() {
-    char name[100];
-    char ingr[100];
-    float price;
-    int discount;
+class MoneyFund : public InvestmentFund {
+    static float provision_year;
 
-    int testCase;
+public:
+    MoneyFund() : InvestmentFund() { }
 
-    cin >> testCase;
-    cin.get();
-    if(testCase == 1) {
-        cout << "====== TESTING IceCream CLASS ======" << endl;
-        cin.getline(name,100);
-        cin.getline(ingr,100);
-        cin >> price;
-        cin >> discount;
-        cout << "CONSTRUCTOR" << endl;
-        IceCream ic1(name, ingr, price);
-        ic1.setDiscount(discount);
-        cin.get();
-        cin.getline(name,100);
-        cin.getline(ingr,100);
-        cin >> price;
-        cin >> discount;
-        IceCream ic2(name, ingr, price);
-        ic2.setDiscount(discount);
-        cout << "OPERATOR &lt;&lt;" << endl;
-        cout << ic1 << endl;
-        cout << ic2 << endl;
-        cout << "OPERATOR ++" << endl;
-        ++ic1;
-        cout << ic1 << endl;
-        cout << "OPERATOR +" << endl;
-        IceCream ic3 = ic2 + "chocolate";
-        cout << ic3 << endl;
-    } else if(testCase == 2) {
-        cout << "====== TESTING IceCream CONSTRUCTORS ======" << endl;
-        cin.getline(name,100);
-        cin.getline(ingr,100);
-        cin >> price;
-        cout << "CONSTRUCTOR" << endl;
-        IceCream ic1(name, ingr, price);
-        cout << ic1 << endl;
-        cout << "COPY CONSTRUCTOR" << endl;
-        IceCream ic2(ic1);
-        cin.get();
-        cin.getline(name,100);
-        ic2.setName(name);
-        cout << ic1 << endl;
-        cout << ic2 << endl;
-        cout << "OPERATOR =" << endl;
-        ic1 = ic2;
-        cin.getline(name,100);
-        ic2.setName(name);
-        cout << ic1 << endl;
-        cout << ic2 << endl;
-        cout << "TESTING EXCEPTION" << endl;
+    MoneyFund(char* name, InvestmentPlan* plans, int n, double price) : InvestmentFund(name, plans, n, price) { }
 
-        // your exception handling code
+    MoneyFund(const MoneyFund& other) : InvestmentFund(other) { }
 
-        cin >> discount;
-
-        try {
-            ic1.setDiscount(discount);
-        } catch(InvalidDiscount& e) {
-            e.message();
+    MoneyFund& operator=(const MoneyFund& other) {
+        if(this == &other) {
+            return *this;
         }
-
-    } else if(testCase == 3) {
-        cout << "====== TESTING IceCreamShop ======" << endl;
-        char icsName[50];
-        cin.getline(icsName,100);
-        cout << "CONSTRUCTOR" << endl;
-        IceCreamShop ics(icsName);
-        int n;
-        cin >> n;
-        cout << "OPERATOR +=" << endl;
-        for(int i = 0; i < n; ++i) {
-            cin.get();
-            cin.getline(name,100);
-            cin.getline(ingr,100);
-            cin >> price;
-            IceCream ic(name, ingr, price);
-            ics += ic;
-        }
-        cout << ics;
-    } else if(testCase == 4) {
-        cout << "====== TESTING IceCreamShop CONSTRUCTORS ======" << endl;
-        char icsName[50];
-        cin.getline(icsName,100);
-        IceCreamShop ics(icsName);
-        int n;
-        cin >> n;
-        for(int i = 0; i < n; ++i) {
-            cin.get();
-            cin.getline(name,100);
-            cin.getline(ingr,100);
-            cin >> price;
-            IceCream ic(name, ingr, price);
-            ics += ic;
-        }
-        IceCream x("FINKI fruits", "strawberry ice cream, raspberry ice cream, blueberry ice cream", 60);
-        IceCreamShop icp = ics;
-        ics+=x;
-        cout << ics << endl;
-        cout << icp << endl;
+        InvestmentFund::operator=(other);
+        return *this;
     }
 
+    double profit() {
+        return (totalSum() * (MoneyFund::provision_year / 100.0)) / 365.0;
+    }
 
-    return 0;
+    ~MoneyFund() { }
+};
+
+class ActionFund : public InvestmentFund {
+    static float provision_year;
+    static float provision_entry;
+
+public:
+    ActionFund() : InvestmentFund() { }
+
+    ActionFund(char* name, InvestmentPlan* plans, int n, double price) : InvestmentFund(name, plans, n, price) { }
+
+    ActionFund(const ActionFund& other) : InvestmentFund(other) { }
+
+    ActionFund& operator=(const ActionFund& other) {
+        if(this == &other) {
+            return *this;
+        }
+        InvestmentFund::operator=(other);
+        return *this;
+    }
+
+    double profit() {
+        return (totalSum() * ActionFund::provision_year / 100.0) / 365 + (newTotalSum() * ActionFund::provision_entry / 100.0);
+    }
+
+    ~ActionFund() { }
+};
+
+float MoneyFund::provision_year = 1;
+float ActionFund::provision_year = 1.5;
+float ActionFund::provision_entry = 3;
+
+double totalProfit(InvestmentFund** funds, int n) {
+    double s = 0;
+    for(int i = 0; i < n; i++) {
+        s += funds[i]->profit();
+    }
+    return s;
 }
 
+int main(){
+
+    char investitor[80], ime[50];
+    double plan, brUdeli, udel;
+    bool flag = false;
+    int n, m;
+    cin >> n;
+    InvestmentFund **fondovi = new InvestmentFund*[n];
+    for(int i = 0; i < n; i++){
+        cin >> ime;
+        cin >> m;
+        InvestmentPlan *ip = new InvestmentPlan[m];
+        for(int j = 0; j < m; j++){
+            cin >> investitor >> plan >> brUdeli;
+            if(j % 2) flag = true;
+            else flag = false;
+            InvestmentPlan IP(investitor, plan, brUdeli, flag);
+            ip[j] = IP;
+        }
+        cin >> udel;
+        if(i % 2){
+            fondovi[i] = new ActionFund(ime, ip, m, udel);
+        }
+        else{
+            fondovi[i] = new MoneyFund(ime, ip, m, udel);
+        }
+    }
+    cout << totalProfit(fondovi, n);
+    return 0;
+}
