@@ -73,7 +73,7 @@ public:
     }
 
     virtual float get_price() {
-        return discount > 0 ? price - (price * (discount / 100)) : price;
+        return discount > 0 ? price - (price * (discount / 100.0)) : price;
     }
 
     ~Podcast() { }
