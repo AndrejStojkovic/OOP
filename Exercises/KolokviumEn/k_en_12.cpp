@@ -108,21 +108,21 @@ public:
     }
 
     double totalSum() {
-        double s = 0;
+        long double s = 0;
         for(int i = 0; i < n; i++) {
-            s += plans[i].getShares();
+            s += plans[i].getPlan();
         }
-        return s * price;
+        return s;
     }
 
     double newTotalSum() {
         double s = 0;
         for(int i = 0; i < n; i++) {
             if(plans[i].isNew()) {
-                s += plans[i].getShares();
+                s += plans[i].getPlan();
             }
         }
-        return s * price;
+        return s;
     }
 
     virtual double profit() = 0;
@@ -140,25 +140,18 @@ public:
 
     MoneyFund(char* name, InvestmentPlan* plans, int n, double price) : InvestmentFund(name, plans, n, price) { }
 
-    MoneyFund(const MoneyFund& other) : InvestmentFund(other) {
-        provision_year = other.provision_year;
-    }
+    MoneyFund(const MoneyFund& other) : InvestmentFund(other) { }
 
     MoneyFund& operator=(const MoneyFund& other) {
         if(this == &other) {
             return *this;
         }
         InvestmentFund::operator=(other);
-        provision_year = other.provision_year;
         return *this;
     }
 
-    static float setProvision(float _provision_year) {
-        provision_year = _provision_year;
-    }
-
     double profit() {
-        return (totalSum() * provision_year / 100.0) / 365.0;
+        return (totalSum() * (MoneyFund::provision_year / 100.0)) / 365.0;
     }
 
     ~MoneyFund() { }
@@ -173,23 +166,18 @@ public:
 
     ActionFund(char* name, InvestmentPlan* plans, int n, double price) : InvestmentFund(name, plans, n, price) { }
 
-    ActionFund(const ActionFund& other) : InvestmentFund(other) {
-        provision_year = other.provision_year;
-        provision_entry = other.provision_entry;
-    }
+    ActionFund(const ActionFund& other) : InvestmentFund(other) { }
 
     ActionFund& operator=(const ActionFund& other) {
         if(this == &other) {
             return *this;
         }
         InvestmentFund::operator=(other);
-        provision_year = other.provision_year;
-        provision_entry = other.provision_entry;
         return *this;
     }
 
     double profit() {
-        return (totalSum() * provision_year / 100.0) / 365.0 + newTotalSum() * provision_entry / 100.0;
+        return (totalSum() * ActionFund::provision_year / 100.0) / 365 + (newTotalSum() * ActionFund::provision_entry / 100.0);
     }
 
     ~ActionFund() { }
@@ -201,15 +189,9 @@ float ActionFund::provision_entry = 3;
 
 double totalProfit(InvestmentFund** funds, int n) {
     double s = 0;
-
     for(int i = 0; i < n; i++) {
-        if(dynamic_cast<MoneyFund*>(funds[i])) {
-            s += dynamic_cast<MoneyFund*>(funds[i])->profit();
-        } else if(dynamic_cast<ActionFund*>(funds[i])) {
-            s += dynamic_cast<ActionFund*>(funds[i])->profit();
-        }
+        s += funds[i]->profit();
     }
-
     return s;
 }
 
