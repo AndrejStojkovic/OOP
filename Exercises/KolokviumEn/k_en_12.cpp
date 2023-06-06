@@ -110,7 +110,7 @@ public:
     double totalSum() {
         long double s = 0;
         for(int i = 0; i < n; i++) {
-            s += plans[i].getPlan();
+            s += plans[i].getShares() * price;
         }
         return s;
     }
