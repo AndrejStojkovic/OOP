@@ -28,7 +28,9 @@ public:
     }
 
     SMS& operator=(const SMS& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         strcpy(this->broj, other.broj);
         this->price = other.price;
         return *this;
@@ -38,8 +40,6 @@ public:
         out << "Tel: " << sms.broj << " - cena: " << sms.SMS_cena() << "den.\n";
         return out;
     }
-
-    static void setDanok(float val) { SMS::ddv = val / 100.0; }
 
     virtual float SMS_cena() = 0;
 
@@ -67,7 +67,9 @@ public:
         return price * (1.0 + x) * ceil(strlen(message) / 160.0);
     }
 
-    static void set_rProcent(float val) { RegularSMS::mult = val / 100; }
+    static void set_rProcent(float val) {
+        RegularSMS::mult = val / 100;
+    }
 
     ~RegularSMS() { }
 };
@@ -81,9 +83,13 @@ public:
 
     SpecialSMS(char* name, float price, bool humane) : SMS(name, price) { this->humane = humane; }
 
-    static void set_sProcent(float val) { SpecialSMS::mult = val / 100; }
+    static void set_sProcent(float val) {
+        SpecialSMS::mult = val / 100;
+    }
 
-    float SMS_cena() { return humane ? price : price * (1.0 + mult); }
+    float SMS_cena() {
+        return humane ? price : price * (1.0 + mult);
+    }
 
     ~SpecialSMS() { }
 };

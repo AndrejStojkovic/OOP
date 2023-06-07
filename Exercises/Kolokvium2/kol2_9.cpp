@@ -12,7 +12,7 @@ public:
 };
 
 class Trud {
-    char type; // C - conference, J - magazine
+    char type;
     int year;
 
     void copy_trud(const Trud& other) {
@@ -35,7 +35,9 @@ public:
     }
 
     Trud& operator=(const Trud& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         copy_trud(other);
         return *this;
     }
@@ -45,11 +47,13 @@ public:
         return in;
     }
 
-    char getType() { return type; }
-    void setType(char type) { this->type = type; }
+    char getType() {
+        return type;
+    }
 
-    int getYear() { return year; }
-    void setYear(int year) { this->year = year; }
+    int getYear() {
+        return year;
+    }
 
     ~Trud() { }
 };
@@ -74,7 +78,7 @@ public:
     Student() {
         strcpy(this->name, "name");
         this->index = this->inYear = this->n = 0;
-        this->grades = new int[0];
+        this->grades = nullptr;
     }
 
     Student(char* name, int index, int inYear, int* grades, int n) {
@@ -82,7 +86,9 @@ public:
         this->index = index;
         this->inYear = inYear;
         this->grades = new int[n];
-        for(int i = 0; i < n; i++) this->grades[i] = grades[i];
+        for(int i = 0; i < n; i++) {
+            this->grades[i] = grades[i];
+        }
         this->n = n;
     }
 
@@ -91,7 +97,9 @@ public:
     }
 
     Student& operator=(const Student& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         delete [] grades;
         copy_student(other);
         return *this;
@@ -102,13 +110,15 @@ public:
         return out;
     }
 
-    char* getName() { return name; }
-
-    int getIndex() { return index; }
+    int getIndex() {
+        return index;
+    }
 
     virtual double rang() {
         double s = 0;
-        for(int i = 0; i < n; i++) s += grades[i];
+        for(int i = 0; i < n; i++) {
+            s += grades[i];
+        }
         return s / n;
     }
 
@@ -125,20 +135,25 @@ class PhDStudent : public Student {
 
     void copy_phdstudent(const PhDStudent& other) {
         this->trudovi = new Trud[other.t_n];
-        for(int i = 0; i < t_n; i++) this->trudovi[i] = other.trudovi[i];
+        for(int i = 0; i < t_n; i++) {
+            this->trudovi[i] = other.trudovi[i];
+        }
         this->t_n = other.t_n;
     }
 public:
     PhDStudent() : Student() {
-        this->trudovi = new Trud[0];
+        this->trudovi = nullptr;
         this->t_n = 0;
     }
 
     PhDStudent(char* name, int index, int inYear, int* grades, int n, Trud* t, int t_n) : Student(name, index, inYear, grades, n) {
         this->trudovi = new Trud[t_n];
         for(int i = 0; i < t_n; i++) {
-            try { t[i].getYear() < inYear ? throw Exception() : this->trudovi[i] = t[i]; }
-            catch(Exception) { Exception::message(); }
+            try {
+                t[i].getYear() < inYear ? throw Exception() : this->trudovi[i] = t[i];
+            } catch(Exception& e) {
+                e.message();
+            }
         }
         this->t_n = t_n;
     }
@@ -148,7 +163,9 @@ public:
     }
 
     PhDStudent& operator=(const PhDStudent& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         Student::operator=(other);
         delete [] trudovi;
         copy_phdstudent(other);
@@ -156,28 +173,42 @@ public:
     }
 
     PhDStudent& operator+=(Trud& trud) {
-        if(trud.getYear() < inYear) throw Exception();
+        if(trud.getYear() < inYear) {
+            throw Exception();
+        }
 
         Trud* tmp = new Trud[t_n + 1];
-        for(int i = 0; i < t_n; i++) tmp[i] = trudovi[i];
+        for(int i = 0; i < t_n; i++) {
+            tmp[i] = trudovi[i];
+        }
         tmp[t_n++] = trud;
 
         delete [] trudovi;
         this->trudovi = new Trud[t_n];
-        for(int i = 0; i < t_n; i++) trudovi[i] = tmp[i];
+        for(int i = 0; i < t_n; i++) {
+            trudovi[i] = tmp[i];
+        }
         delete [] tmp;
 
         return *this;
     }
 
-    static void setC(int _c) { c = _c; }
-    static void setJ(int _j) { j = _j; }
+    static void setC(int _c) {
+        c = _c;
+    }
+
+    static void setJ(int _j) {
+        j = _j;
+    }
 
     double rang() {
         double curr = Student::rang();
         for(int i = 0; i < t_n; i++) {
-            if(tolower(trudovi[i].getType()) == 'c') curr += c;
-            else if(tolower(trudovi[i].getType()) == 'j') curr += j;
+            if(tolower(trudovi[i].getType()) == 'c') {
+                curr += c;
+            } else if(tolower(trudovi[i].getType()) == 'j') {
+                curr += j;
+            }
         }
         return curr;
     }

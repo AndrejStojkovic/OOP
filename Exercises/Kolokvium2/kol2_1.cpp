@@ -19,9 +19,9 @@ protected:
     }
 public:
     Book() {
-        strcpy(this->ISBN, "");
-        strcpy(this->title, "");
-        strcpy(this->author, "");
+        strcpy(this->ISBN, "isbn");
+        strcpy(this->title, "title");
+        strcpy(this->author, "author");
         this->price = 0.0;
     }
 
@@ -37,7 +37,9 @@ public:
     }
 
     Book& operator=(const Book& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         copy_book(other);
         return *this;
     }
@@ -49,7 +51,9 @@ public:
 
     virtual float bookPrice() = 0;
 
-    void setISBN(char *ISBN) { strcpy(this->ISBN, ISBN); }
+    void setISBN(char *ISBN) {
+        strcpy(this->ISBN, ISBN);
+    }
 
     ~Book() { }
 };
@@ -65,8 +69,8 @@ class OnlineBook : public Book {
     }
 public:
     OnlineBook() : Book() {
-        this->url = new char[0];
-        strcpy(this->url, "");
+        this->url = new char[4];
+        strcpy(this->url, "url");
         this->size = 0;
     }
 
@@ -81,7 +85,9 @@ public:
     }
 
     OnlineBook& operator=(const OnlineBook& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         Book::operator=(other);
         delete [] url;
         copy_onlinebook(other);
@@ -121,12 +127,13 @@ public:
     }
 
     PrintBook& operator=(const PrintBook& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         Book::operator=(other);
         copy_printbook(other);
         return *this;
     }
-
 
     float bookPrice() {
         return weight > 0.7 ? 1.15 * price : price;
@@ -143,12 +150,20 @@ void mostExpensiveBook(Book** books, int n) {
     int online = 0, printed = 0, idx = -1;
 
     for(int i = 0; i < n; i++) {
-        if(dynamic_cast<OnlineBook*>(books[i])) online++;
-        else if(dynamic_cast<PrintBook*>(books[i])) printed++;
-        if(idx == -1 || books[i]->bookPrice() > books[idx]->bookPrice()) idx = i;
+        if(dynamic_cast<OnlineBook*>(books[i])) {
+            online++;
+        } else if(dynamic_cast<PrintBook*>(books[i])) {
+            printed++;
+        }
+
+        if(idx == -1 || books[i]->bookPrice() > books[idx]->bookPrice()) {
+            idx = i;
+        }
     }
 
-    if(idx == -1) return;
+    if(idx == -1) {
+        return;
+    }
 
     cout << "FINKI-Education\n";
     cout << "Total number of online books: " << online << "\n";
@@ -158,7 +173,6 @@ void mostExpensiveBook(Book** books, int n) {
 }
 
 int main(){
-
     char isbn[20], title[50], author[30], url[100];
     int size, tip;
     float price, weight;
@@ -218,7 +232,6 @@ int main(){
         ob2.setISBN(isbn);
         cout << ob1 << endl;
         cout << ob2 << endl;
-        cout << "here\n";
     }
     if (testCase == 3){
         cout << "====== Testing PrintBook class ======" << endl;

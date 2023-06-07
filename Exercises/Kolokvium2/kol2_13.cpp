@@ -55,7 +55,9 @@ public:
     }
 
     Image& operator=(const Image& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         delete [] name;
         copy_image(other);
         return *this;
@@ -70,21 +72,9 @@ public:
         return fileSize() > other.fileSize();
     }
 
-    virtual int fileSize() { return width * height * 3; }
-
-    int getPixels() { return width * height; }
-
-    char* getName() { return name; }
-    void setName(char* name) { this->name = new char[strlen(name + 1)]; strcpy(this->name, name);}
-
-    char* getAuthor() { return author; }
-    void setAuthor(char* author) { strcpy(this->author, author); }
-
-    int getWidth() { return width; }
-    void setWidth(int width) { this->width = width;}
-
-    int getHeight() { return height; }
-    void setHeight(int height) { this->height = height; }
+    virtual int fileSize() {
+        return width * height * 3;
+    }
 
     ~Image() {
         delete [] name;
@@ -108,7 +98,9 @@ public:
     }
 
     TransparentImage& operator=(const TransparentImage& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         Image::operator=(other);
         this->transparent = other.transparent;
         return *this;
@@ -118,7 +110,9 @@ public:
         return fileSize() > other.fileSize();
     }
 
-    int fileSize() { return transparent ? width * height * 4 : width * height + (width * height) / 8.0; }
+    int fileSize() {
+        return transparent ? width * height * 4 : width * height + (width * height) / 8.0;
+    }
 
     ~TransparentImage() { }
 };
@@ -132,7 +126,9 @@ class Folder {
     void copy_folder(const Folder& other) {
         strcpy(this->name, other.name);
         strcpy(this->author, other.author);
-        for(int i = 0; i < other.n; i++) this->images[i] = other.images[i];
+        for(int i = 0; i < other.n; i++) {
+            this->images[i] = other.images[i];
+        }
         this->n = other.n;
     }
 
@@ -154,13 +150,17 @@ public:
     }
 
     Folder& operator=(const Folder& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         copy_folder(other);
         return *this;
     }
 
     Folder& operator+=(Image& img) {
-        if(n >= 100) return *this;
+        if(n >= 100) {
+            return *this;
+        }
         images[n++] = &img;
         return *this;
     }
@@ -171,7 +171,9 @@ public:
 
     friend ostream& operator<<(ostream& out, Folder& f) {
         out << f.name << " " << f.author << "\n--\n";
-        for(int i = 0; i < f.n; i++) out << *f.images[i];
+        for(int i = 0; i < f.n; i++) {
+            out << *f.images[i];
+        }
         out << "--\nFolder size: " << f.folderSize() << "\n";
         return out;
     }
@@ -188,11 +190,14 @@ public:
         int idx = -1;
 
         for(int i = 0; i < n; i++) {
-            if(idx == -1) { idx = i; continue; }
-            if(images[i]->fileSize() > images[idx]->fileSize()) idx = i;
+            if(idx == -1 || images[i]->fileSize() > images[idx]->fileSize()) {
+                idx = i;
+            }
         }
 
-        if(idx == -1) return NULL;
+        if(idx == -1) {
+            return NULL;
+        }
 
         return images[idx];
     }
@@ -202,12 +207,11 @@ public:
 
 Folder& max_folder_size(Folder* f, int n) {
     int idx = -1;
-
     for(int i = 0; i < n; i++) {
-        if(idx == -1) { idx = i; continue; }
-        if(f[i].folderSize() > f[idx].folderSize()) idx = i;
+        if(idx == -1 || f[i].folderSize() > f[idx].folderSize()) {
+            idx = i;
+        }
     }
-
     return f[idx];
 }
 

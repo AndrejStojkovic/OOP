@@ -1,3 +1,5 @@
+// 2 - 2
+
 #include <iostream>
 #include <cstring>
 using namespace std;
@@ -13,8 +15,8 @@ class Kurs {
     }
 public:
     Kurs() {
-        this->name = new char[0];
-        strcpy(this->name, "");
+        this->name = new char[5];
+        strcpy(this->name, "name");
         this->credits = 0;
     }
 
@@ -29,14 +31,21 @@ public:
     }
 
     Kurs& operator=(const Kurs& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         delete [] name;
         copy_kurs(other);
         return *this;
     }
 
-    char* getCourseName() const { return name; }
-    int getCourseCredits() const { return credits; }
+    char* getCourseName() const {
+        return name;
+    }
+
+    int getCourseCredits() const {
+        return credits;
+    }
 
     ~Kurs() {
         delete [] name;
@@ -64,7 +73,9 @@ class Student {
         this->index = other.index;
         this->n = other.n;
         this->grades = new int[n];
-        for(int i = 0; i < n; i++) this->grades[i] = other.grades[i];
+        for(int i = 0; i < n; i++) {
+            this->grades[i] = other.grades[i];
+        }
     }
 
 protected:
@@ -73,14 +84,16 @@ protected:
 public:
     Student() {
         this->index = this->n = 0;
-        this->grades = new int[0];
+        this->grades = nullptr;
     }
 
     Student(int index, int* grades, int n) {
         this->index = index;
         this->n = n;
         this->grades = new int[n];
-        for(int i = 0; i < n; i++) this->grades[i] = grades[i];
+        for(int i = 0; i < n; i++) {
+            this->grades[i] = grades[i];
+        }
     }
 
     Student(const Student& other) {
@@ -88,7 +101,9 @@ public:
     }
 
     Student& operator=(const Student& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         delete [] grades;
         copy_student(other);
         return *this;
@@ -97,7 +112,9 @@ public:
     virtual int getBodovi() {
         float s = 0;
         for(int i = 0; i < n; i++) {
-            if(grades[i] > 5) s++;
+            if(grades[i] > 5) {
+                s++;
+            }
         }
         return (s / n) * 100;
     }
@@ -120,7 +137,9 @@ class Predavach {
         strcpy(this->name, other.name);
         this->n = other.n;
         this->courses = new Kurs[other.n];
-        for(int i = 0; i < other.n; i++) this->courses[i] = other.courses[i];
+        for(int i = 0; i < other.n; i++) {
+            this->courses[i] = other.courses[i];
+        }
     }
 
 protected:
@@ -128,9 +147,9 @@ protected:
 
 public:
     Predavach() {
-        this->name = new char[0];
-        strcpy(this->name, "");
-        this->courses = new Kurs[0];
+        this->name = new char[5];
+        strcpy(this->name, "name");
+        this->courses = nullptr;
         this->n = 0;
     }
 
@@ -139,7 +158,9 @@ public:
         strcpy(this->name, name);
         this->n = n;
         this->courses = new Kurs[n];
-        for(int i = 0; i < n; i++) this->courses[i] = courses[i];
+        for(int i = 0; i < n; i++) {
+            this->courses[i] = courses[i];
+        }
     }
 
     Predavach(const Predavach& other) {
@@ -147,22 +168,30 @@ public:
     }
 
     Predavach& operator=(const Predavach& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         delete [] name;
         delete [] courses;
         copy_predavach(other);
         return *this;
     }
 
-    char* getName() const { return name; }
-    Kurs* getCourses() const { return courses; }
-    int getNumberOfCourses() const { return n; }
+    Kurs* getCourses() const {
+        return courses;
+    }
+
+    int getNumberOfCourses() const {
+        return n;
+    }
 
     virtual void pecati() {
         cout << "(";
         for(int i = 0; i < n; i++) {
             cout << courses[i].getCourseName() << " " << courses[i].getCourseCredits() << "ECTS";
-            if(i != n - 1) cout << ", ";
+            if(i != n - 1) {
+                cout << ", ";
+            }
         }
         cout << ")";
     }
@@ -187,7 +216,9 @@ public:
     }
 
     int getBodovi() {
-        if(getNumberOfCourses() <= 0) throw NoCourseException(index);
+        if(getNumberOfCourses() <= 0) {
+            throw NoCourseException(index);
+        }
         return Student::getBodovi() + (20 * hours) / getNumberOfCourses();
     }
 
@@ -204,8 +235,11 @@ Student& vratiNajdobroRangiran(Student** studenti, int n) {
     int idx = 0;
 
     for(int i = 0; i < n; i++) {
-        try { idx = studenti[i]->getBodovi() > studenti[idx]->getBodovi() ? i : idx; }
-        catch(NoCourseException &e) { e.message(); }
+        try {
+            idx = studenti[i]->getBodovi() > studenti[idx]->getBodovi() ? i : idx;
+        } catch(NoCourseException &e) {
+            e.message();
+        }
     }
 
     return *studenti[idx];
@@ -213,13 +247,15 @@ Student& vratiNajdobroRangiran(Student** studenti, int n) {
 
 void pecatiDemonstratoriKurs(char* kurs, Student** studenti, int n) {
     for(int i = 0; i < n; i++) {
-        if(dynamic_cast<Demonstrator*>(studenti[i])) {
-            for(int j = 0; j < dynamic_cast<Demonstrator*>(studenti[i])->getNumberOfCourses(); j++) {
-                if(strcmp(kurs, dynamic_cast<Demonstrator*>(studenti[i])->getCourses()[j].getCourseName()) == 0) {
-                    studenti[i]->pecati();
-                    cout << "\n";
-                    break;
-                }
+        if(!dynamic_cast<Demonstrator*>(studenti[i])) {
+            continue;
+        }
+
+        for(int j = 0; j < dynamic_cast<Demonstrator*>(studenti[i])->getNumberOfCourses(); j++) {
+            if(strcmp(kurs, dynamic_cast<Demonstrator*>(studenti[i])->getCourses()[j].getCourseName()) == 0) {
+                studenti[i]->pecati();
+                cout << "\n";
+                break;
             }
         }
     }

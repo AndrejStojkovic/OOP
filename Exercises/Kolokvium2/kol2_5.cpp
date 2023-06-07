@@ -24,8 +24,8 @@ class Customer {
     }
 public:
     Customer() {
-        strcpy(this->name, " ");
-        strcpy(this->email, " ");
+        strcpy(this->name, "name");
+        strcpy(this->email, "email");
         this->type = standard;
         this->baseDiscount = 10;
         this->additionalDiscount = 20;
@@ -46,37 +46,47 @@ public:
     }
 
     Customer& operator=(const Customer& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         copy_customer(other);
         return *this;
     }
 
     friend ostream& operator<<(ostream& out, const Customer& c) {
-        out << c.name << "\n";
-        out << c.email << "\n";
-        out << c.items << "\n";
+        out << c.name << "\n" << c.email << "\n" << c.items << "\n";
 
-        switch(c.type) {
-            case standard:
-                out << "standard 0"; break;
-            case loyal:
-                out << "loyal " << c.baseDiscount; break;
-            case vip:
-                out << "vip " << c.baseDiscount + c.additionalDiscount; break;
+        if(c.type == standard) {
+            out << "standard 0";
+        } else if(c.type == loyal) {
+            out << "loyal " << c.baseDiscount;
+        } else if(c.type == vip) {
+            out << "vip " << c.baseDiscount + c.additionalDiscount;
         }
 
         out << "\n";
         return out;
     }
 
-    char* getEmail() { return email; }
-    int getItemCount() { return items; }
+    char* getEmail() {
+        return email;
+    }
 
-    typeC getType() { return type; }
-    void setType(typeC type) { this->type = type; }
+    int getItemCount() {
+        return items;
+    }
 
-    void setDiscount1(int baseDiscount) { this->baseDiscount = baseDiscount; }
-    void setDiscount2(int additionalDiscount) { this->additionalDiscount = additionalDiscount; }
+    typeC getType() {
+        return type;
+    }
+
+    void setType(typeC type) {
+        this->type = type;
+    }
+
+    void setDiscount1(int baseDiscount) {
+        this->baseDiscount = baseDiscount;
+    }
 
     ~Customer() { }
 };
@@ -88,7 +98,6 @@ public:
     }
 };
 
-
 class FINKI_bookstore {
     Customer* customers;
     int n;
@@ -96,18 +105,14 @@ class FINKI_bookstore {
     void copy_bookstore(const FINKI_bookstore& other) {
         this->n = other.n;
         this->customers = new Customer[other.n];
-        for(int i = 0; i < other.n; i++) this->customers[i] = other.customers[i];
+        for(int i = 0; i < other.n; i++) {
+            this->customers[i] = other.customers[i];
+        }
     }
 public:
     FINKI_bookstore() {
         this->n = 0;
-        this->customers = new Customer[0];
-    }
-
-    FINKI_bookstore(Customer* customers, int n) {
-        this->n = n;
-        this->customers = new Customer[n];
-        for(int i = 0; i < n; i++) this->customers[i] = customers[i];
+        this->customers = nullptr;
     }
 
     FINKI_bookstore(const FINKI_bookstore& other) {
@@ -115,7 +120,9 @@ public:
     }
 
     FINKI_bookstore& operator=(const FINKI_bookstore& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         delete [] customers;
         copy_bookstore(other);
         return *this;
@@ -123,18 +130,25 @@ public:
 
     FINKI_bookstore& operator+=(Customer& customer) {
         for(int i = 0; i < n; i++) {
-            if(!strcmp(this->customers[i].getEmail(), customer.getEmail()))
+            if(!strcmp(this->customers[i].getEmail(), customer.getEmail())) {
                 throw UserExistsException();
+            }
         }
 
         Customer* tmp = new Customer[n + 1];
-        for(int i = 0; i < n; i++) tmp[i] = this->customers[i];
+        for(int i = 0; i < n; i++) {
+            tmp[i] = this->customers[i];
+        }
         tmp[n++] = customer;
 
         delete [] customers;
         this->customers = new Customer[n];
-        for(int i = 0; i < n; i++) this->customers[i] = tmp[i];
+        for(int i = 0; i < n; i++) {
+            this->customers[i] = tmp[i];
+        }
         delete [] tmp;
+
+        return *this;
     }
 
     friend ostream& operator<<(ostream& out, const FINKI_bookstore& f) {
@@ -146,15 +160,20 @@ public:
 
     void update() {
         for(int i = 0; i < n; i++) {
-            if(customers[i].getItemCount() > 5 && customers[i].getType() == standard) customers[i].setType(loyal);
-            else if(customers[i].getItemCount() > 10 && customers[i].getType() == loyal) customers[i].setType(vip);
+            if(customers[i].getItemCount() > 5 && customers[i].getType() == standard) {
+                customers[i].setType(loyal);
+            } else if(customers[i].getItemCount() > 10 && customers[i].getType() == loyal) {
+                customers[i].setType(vip);
+            }
         }
     }
 
     void setCustomers(Customer* customers, int n) {
         this->n = n;
         this->customers = new Customer[n];
-        for(int i = 0; i < n; i++) this->customers[i] = customers[i];
+        for(int i = 0; i < n; i++) {
+            this->customers[i] = customers[i];
+        }
     }
 
     ~FINKI_bookstore() {

@@ -20,9 +20,9 @@ private:
 
 public:
     Koncert() {
-        strcpy(this->name, "abc");
-        strcpy(this->location, "abc");
-        this->price = 0.0;
+        strcpy(this->name, "name");
+        strcpy(this->location, "location");
+        this->price = 0;
     }
 
     Koncert(char* name, char* location, double price) {
@@ -36,24 +36,28 @@ public:
     }
 
     Koncert& operator=(const Koncert& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         copy_koncert(other);
         return *this;
     }
 
-    virtual double cena() { return price * (1.0 - discount); }
+    virtual double cena() {
+        return price * (1.0 - discount);
+    }
 
-    char* getNaziv() { return name; }
-    void setName(char* name) { strcpy(this->name, name); }
+    char* getNaziv() {
+        return name;
+    }
 
-    char* getLocation() { return location; }
-    void setLocation(char* location) { strcpy(this->location, location); }
+    double getSezonskiPopust() {
+        return discount;
+    }
 
-    double getSezonskiPopust() { return discount; }
-    void setSezonskiPopust(double _discount) { discount = _discount; }
-
-    double getPrice() { return price; }
-    void setPrice(double price) { this->price = price; }
+    void setSezonskiPopust(double _discount) {
+        discount = _discount;
+    }
 
     ~Koncert() { }
 };
@@ -61,7 +65,7 @@ public:
 class ElektronskiKoncert : public Koncert {
     char* dj;
     float hours;
-    bool time; // false - night, true - day
+    bool time;
 
     void copy_elkoncert(const ElektronskiKoncert& other) {
         this->dj = new char[strlen(other.dj) + 1];
@@ -72,8 +76,9 @@ class ElektronskiKoncert : public Koncert {
 
 public:
     ElektronskiKoncert() : Koncert() {
-        this->dj = new char[0];
-        this->hours = 0.0;
+        this->dj = new char[3];
+        strcpy(this->dj, "dj");
+        this->hours = 0;
         this->time = false;
     }
 
@@ -89,7 +94,9 @@ public:
     }
 
     ElektronskiKoncert& operator=(const ElektronskiKoncert& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         Koncert::operator=(other);
         delete [] dj;
         copy_elkoncert(other);
@@ -99,11 +106,13 @@ public:
     double cena() {
         int s = 0;
 
-        if(hours > 7) s += 360;
-        else if(hours > 5) s += 150;
+        if(hours > 7) {
+            s += 360;
+        } else if(hours > 5) {
+            s += 150;
+        }
 
-        if(time) s -= 50;
-        else s += 100;
+        s += time ? -50 : 100;
 
         return price * (1.0 - discount) + s;
     }
@@ -119,8 +128,12 @@ void najskapKoncert(Koncert** koncerti, int n) {
     int idx = 0, counter = 0;
 
     for(int i = 0; i < n; i++) {
-        if(koncerti[i]->cena() > koncerti[idx]->cena()) idx = i;
-        if(dynamic_cast<ElektronskiKoncert*>(koncerti[i])) counter++;
+        if(koncerti[i]->cena() > koncerti[idx]->cena()) {
+            idx = i;
+        }
+        if(dynamic_cast<ElektronskiKoncert*>(koncerti[i])) {
+            counter++;
+        }
     }
 
     cout << "Najskap koncert: " << koncerti[idx]->getNaziv() << " " << koncerti[idx]->cena() << "\n";
@@ -130,13 +143,12 @@ void najskapKoncert(Koncert** koncerti, int n) {
 bool prebarajKoncert(Koncert** koncerti, int n, char* naziv, bool elektronski) {
     for(int i = 0; i < n; i++) {
         if(!elektronski || dynamic_cast<ElektronskiKoncert*>(koncerti[i])) {
-            if(!strcmp(koncerti[i]->getNaziv(), naziv)) {
+            if(!strcmp(naziv, koncerti[i]->getNaziv())) {
                 cout << koncerti[i]->getNaziv() << " " << koncerti[i]->cena() << "\n";
                 return true;
             }
         }
     }
-
     return false;
 }
 

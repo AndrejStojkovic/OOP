@@ -12,18 +12,24 @@ protected:
 private:
     void copy_ekipa(const FudbalskaEkipa& other) {
         strcpy(this->coach, other.coach);
-        for(int i = 0; i < 10; i++) this->goals[i] = other.goals[i];
+        for(int i = 0; i < 10; i++) {
+            this->goals[i] = other.goals[i];
+        }
     }
-    
+
 public:
     FudbalskaEkipa() {
         strcpy(this->coach, "abc");
-        for(int i = 0; i < 10; i++) this->goals[i] = 0;
+        for(int i = 0; i < 10; i++) {
+            this->goals[i] = 0;
+        }
     }
 
     FudbalskaEkipa(char* coach, int* goals) {
         strcpy(this->coach, coach);
-        for(int i = 0; i < 10; i++) this->goals[i] = goals[i];
+        for(int i = 0; i < 10; i++) {
+            this->goals[i] = goals[i];
+        }
     }
 
     FudbalskaEkipa(const FudbalskaEkipa& other) {
@@ -31,14 +37,19 @@ public:
     }
 
     FudbalskaEkipa& operator=(const FudbalskaEkipa& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         copy_ekipa(other);
         return *this;
     }
 
     FudbalskaEkipa& operator+=(int lastMatchGoals) {
-        for(int i = 0; i < 9; i++) this->goals[i] = this->goals[i + 1];
+        for(int i = 0; i < 9; i++) {
+            this->goals[i] = this->goals[i + 1];
+        }
         this->goals[9] = lastMatchGoals;
+        return *this;
     }
 
     bool operator>(FudbalskaEkipa& other) {
@@ -47,17 +58,17 @@ public:
 
     int getTotalGoals() {
         int s = 0;
-        for(int i = 0; i < 10; i++) s += goals[i];
+        for(int i = 0; i < 10; i++) {
+            s += goals[i];
+        }
         return s;
     }
 
     virtual int uspeh() = 0;
 
-    char* getCoach() { return coach; }
-    void setCoach(char* coach) { strcpy(this->coach, coach); }
-
-    int* getGoals() { return goals; }
-    void setGoals(int* goals) { for(int i = 0; i < 10; i++) this->goals[i] = goals[i]; }
+    char* getCoach() {
+        return coach;
+    }
 
     ~FudbalskaEkipa() { }
 };
@@ -74,7 +85,8 @@ class Klub : public FudbalskaEkipa {
 
 public:
     Klub() : FudbalskaEkipa() {
-        this->name = new char[0];
+        this->name = new char[5];
+        strcpy(this->name, "name");
         this->titles = 0;
     }
 
@@ -95,15 +107,21 @@ public:
     }
 
     Klub& operator=(const Klub& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         FudbalskaEkipa::operator=(other);
         copy_klub(other);
         return *this;
     }
 
-    int uspeh() { return getTotalGoals() * 3 + titles * 1000; }
+    int uspeh() {
+        return getTotalGoals() * 3 + titles * 1000;
+    }
 
-    char* getName() { return name; }
+    char* getName() {
+        return name;
+    }
 
     ~Klub() {
         delete [] name;
@@ -122,17 +140,12 @@ class Reprezentacija : public FudbalskaEkipa {
 
 public:
     Reprezentacija() : FudbalskaEkipa() {
-        this->country = new char[0];
+        this->country = new char[8];
+        strcpy(this->country, "country");
         this->matches = 0;
     }
 
     Reprezentacija(char* coach, int* goals, char* country, int matches) : FudbalskaEkipa(coach, goals) {
-        this->country = new char[strlen(country) + 1];
-        strcpy(this->country, country);
-        this->matches = matches;
-    }
-
-    Reprezentacija(const FudbalskaEkipa& f, char* country, int matches) : FudbalskaEkipa(f) {
         this->country = new char[strlen(country) + 1];
         strcpy(this->country, country);
         this->matches = matches;
@@ -143,15 +156,21 @@ public:
     }
 
     Reprezentacija& operator=(const Reprezentacija& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         FudbalskaEkipa::operator=(other);
         copy_reprezentacija(other);
         return *this;
     }
 
-    int uspeh() { return getTotalGoals() * 3 + matches * 50; }
+    int uspeh() {
+        return getTotalGoals() * 3 + matches * 50;
+    }
 
-    char* getCountry() { return country; }
+    char* getCountry() {
+        return country;
+    }
 
     ~Reprezentacija() {
         delete [] country;
@@ -159,15 +178,28 @@ public:
 };
 
 ostream& operator<<(ostream& out, FudbalskaEkipa& k) {
-    if(dynamic_cast<Klub*>(&k)) out << dynamic_cast<Klub*>(&k)->getName();
-    else if(dynamic_cast<Reprezentacija*>(&k)) out << dynamic_cast<Reprezentacija*>(&k)->getCountry();
+    if(dynamic_cast<Klub*>(&k)) {
+        out << dynamic_cast<Klub*>(&k)->getName();
+    } else if(dynamic_cast<Reprezentacija*>(&k)) {
+        out << dynamic_cast<Reprezentacija*>(&k)->getCountry();
+    }
     out << "\n" << k.getCoach() << "\n" << k.uspeh() << "\n";
     return out;
 }
 
 void najdobarTrener(FudbalskaEkipa** ekipi, int n) {
-    int idx = 0;
-    for(int i = 0; i < n; i++) if(ekipi[i]->uspeh() > ekipi[idx]->uspeh()) idx = i;
+    int idx = -1;
+
+    for(int i = 0; i < n; i++) {
+        if(idx == -1 || ekipi[i]->uspeh() > ekipi[idx]->uspeh()) {
+            idx = i;
+        }
+    }
+
+    if(idx == -1) {
+        return;
+    }
+
     cout << *ekipi[idx];
 }
 

@@ -19,7 +19,8 @@ protected:
 
 public:
     Transport() {
-        this->destination = new char[0];
+        this->destination = new char[5];
+        strcpy(this->destination, "dest");
         this->price = this->km = 0;
     }
 
@@ -35,7 +36,9 @@ public:
     }
 
     Transport& operator=(const Transport& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         delete [] destination;
         copy_transport(other);
         return *this;
@@ -54,17 +57,13 @@ public:
         return price;
     }
 
-    char* getDestination() { return destination; }
-    void setDestination(char* destination) {
-        this->destination = new char[strlen(destination) + 1];
-        strcpy(this->destination, destination);
+    char* getDestination() {
+        return destination;
     }
 
-    int getPrice() { return price; }
-    void setPrice(int price) { this->price = price; }
-
-    int getKM() { return km; }
-    void setKM(int km) { this->km = km; }
+    int getKM() {
+        return km;
+    }
 
     ~Transport() {
         delete [] destination;
@@ -88,16 +87,17 @@ public:
     }
 
     AvtomobilTransport& operator=(const AvtomobilTransport& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         Transport::operator=(other);
         this->driver = other.driver;
         return *this;
     }
 
-    float cenaTransport() { return driver ? price * 1.2 : price; }
-
-    bool getDriver() { return driver; }
-    void setDriver(bool driver) { this->driver = driver; }
+    float cenaTransport() {
+        return driver ? price * 1.2 : price;
+    }
 
     ~AvtomobilTransport() { }
 };
@@ -119,16 +119,17 @@ public:
     }
 
     KombeTransport& operator=(const KombeTransport& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         Transport::operator=(other);
-        this->passengers;
+        this->passengers = other.passengers;
         return *this;
     }
 
-    float cenaTransport() { return price - (passengers * 200); }
-
-    int getPassengers() { return passengers; }
-    void setPassengers(int passengers) { this->passengers = passengers; }
+    float cenaTransport() {
+        return price - (passengers * 200);
+    }
 
     ~KombeTransport() { }
 };

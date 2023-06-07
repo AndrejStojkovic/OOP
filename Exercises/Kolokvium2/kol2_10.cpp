@@ -5,7 +5,10 @@
 using namespace std;
 
 class NegativnaVrednost {
-public: void message() { cout << "Oglasot ima nevalidna vrednost za cenata i nema da bide evidentiran!\n"; }
+public:
+    void message() {
+        cout << "Oglasot ima nevalidna vrednost za cenata i nema da bide evidentiran!\n";
+    }
 };
 
 class Oglas {
@@ -25,7 +28,7 @@ public:
         strcpy(this->title, "title");
         strcpy(this->category, "category");
         strcpy(this->description, "description");
-        this->price = 0.0;
+        this->price = 0;
     }
 
     Oglas(char* title, char* category, char* description, float price) {
@@ -40,7 +43,9 @@ public:
     }
 
     Oglas& operator=(const Oglas& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         copy_oglas(other);
         return *this;
     }
@@ -54,17 +59,13 @@ public:
         return out;
     }
 
-    char* getNaslov() { return title; }
-    void setNaslov(char* title) { strcpy(this->title, title); }
+    char* getKategorija() {
+        return category;
+    }
 
-    char* getKategorija() { return category; }
-    void setKategorija(char* category) { strcpy(this->category, category); }
-
-    char* getOpis() { return description; }
-    void setOpis(char* description) { strcpy(this->description, description); }
-
-    float getCena() { return price; }
-    void setCena(float price) { this->price = price; }
+    float getCena() {
+        return price;
+    }
 
     ~Oglas() { }
 };
@@ -77,26 +78,30 @@ class Oglasnik {
     void copy_oglasnik(const Oglasnik& other) {
         strcpy(this->name, other.name);
         this->oglasi = new Oglas[other.n];
-        for(int i = 0; i < n; i++) this->oglasi[i] = other.oglasi[i];
+        for(int i = 0; i < n; i++) {
+            this->oglasi[i] = other.oglasi[i];
+        }
         this->n = other.n;
     }
 public:
     Oglasnik() {
         strcpy(this->name, "name");
-        this->oglasi = new Oglas[0];
+        this->oglasi = nullptr;
         this->n = 0;
     }
 
     Oglasnik(char* name) {
         strcpy(this->name, name);
-        this->oglasi = new Oglas[0];
+        this->oglasi = nullptr;
         this->n = 0;
     }
 
     Oglasnik(char* name, Oglas* oglasi, int n) {
         strcpy(this->name, name);
         this->oglasi = new Oglas[n];
-        for(int i = 0; i < n; i++) this->oglasi[i] = oglasi[i];
+        for(int i = 0; i < n; i++) {
+            this->oglasi[i] = oglasi[i];
+        }
         this->n = n;
     }
 
@@ -105,43 +110,58 @@ public:
     }
 
     Oglasnik& operator=(const Oglasnik& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         delete [] oglasi;
         copy_oglasnik(other);
         return *this;
     }
 
     Oglasnik& operator+=(Oglas& oglas) {
-        if(oglas.getCena() < 0) throw NegativnaVrednost();
+        if(oglas.getCena() < 0) {
+            throw NegativnaVrednost();
+        }
 
         Oglas* tmp = new Oglas[n + 1];
-        for(int i = 0; i < n; i++) tmp[i] = oglasi[i];
+        for(int i = 0; i < n; i++) {
+            tmp[i] = oglasi[i];
+        }
         tmp[n++] = oglas;
 
         delete [] oglasi;
         this->oglasi = new Oglas[n];
-        for(int i = 0; i < n; i++) this->oglasi[i] = tmp[i];
+        for(int i = 0; i < n; i++) {
+            this->oglasi[i] = tmp[i];
+        }
         delete [] tmp;
+
+        return *this;
     }
 
     friend ostream& operator<<(ostream& out, const Oglasnik& o) {
         out << o.name << "\n";
-        for(int i = 0; i < o.n; i++) out << o.oglasi[i]<< "\n";
+        for(int i = 0; i < o.n; i++) {
+            out << o.oglasi[i]<< "\n";
+        }
         return out;
     }
 
     void oglasiOdKategorija(char* k) {
         for(int i = 0; i < n; i++) {
-            if(!strcmp(oglasi[i].getKategorija(), k)) cout << oglasi[i] << "\n";
+            if(!strcmp(oglasi[i].getKategorija(), k)) {
+                cout << oglasi[i] << "\n";
+            }
         }
     }
 
     void najniskaCena() {
         int idx = 0;
         for(int i = 0; i < n; i++) {
-            if(oglasi[i].getCena() < oglasi[idx].getCena()) idx = i;
+            if(oglasi[i].getCena() < oglasi[idx].getCena()) {
+                idx = i;
+            }
         }
-
         cout << oglasi[idx] << "\n";
     }
 

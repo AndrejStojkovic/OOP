@@ -2,13 +2,15 @@
 
 #include<iostream>
 #include<cstring>
-#include<cmath>
 #define MAX_PINOVI 4
 #define DEFAULT_LIMIT 7
 using namespace std;
 
 class OutOfBoundsException {
-public: void message() { cout << "Brojot na pin kodovi ne moze da go nadmine dozvolenoto\n"; }
+public:
+    void message() {
+        cout << "Brojot na pin kodovi ne moze da go nadmine dozvolenoto\n";
+    }
 };
 
 class Karticka{
@@ -26,7 +28,7 @@ private:
 
 public:
     Karticka() {
-        strcpy(this->smetka, "");
+        strcpy(this->smetka, "smetka");
         this->pin = 0;
         this->povekjePin = false;
     }
@@ -41,14 +43,19 @@ public:
     }
 
     Karticka& operator=(const Karticka& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         copy_karticka(other);
         return *this;
     }
 
     virtual int tezinaProbivanje() {
         int s = 0, c = pin;
-        while(c) { s++; c /= 10; }
+        while(c) {
+            s++;
+            c /= 10;
+        }
         return s;
     }
 
@@ -57,14 +64,13 @@ public:
         return out;
     }
 
-    char* getSmetka() { return smetka; }
-    void setSmetka(char* smetka) { strcpy(this->smetka, smetka); }
+    char* getSmetka() {
+        return smetka;
+    }
 
-    int getPin() { return pin; }
-    void setPin(int pin) { this->pin = pin; }
-
-    bool getDopolnitelenPin() { return povekjePin; }
-    void setPovekjePin(bool povekjePin) { this->povekjePin = povekjePin; }
+    bool getDopolnitelenPin() {
+        return povekjePin;
+    }
 
     ~Karticka() { }
 };
@@ -78,19 +84,21 @@ class SpecijalnaKarticka : public Karticka {
         this->pin = other.pin;
         this->povekjePin = other.povekjePin;
         this->pinovi = new int[other.pinovi_n];
-        for(int i = 0; i < other.pinovi_n; i++) this->pinovi[i] = other.pinovi[i];
+        for(int i = 0; i < other.pinovi_n; i++) {
+            this->pinovi[i] = other.pinovi[i];
+        }
         this->pinovi_n = other.pinovi_n;
     }
 public:
     SpecijalnaKarticka() : Karticka() {
         this->povekjePin = true;
-        this->pinovi = new int[0];
+        this->pinovi = nullptr;
         this->pinovi_n = 0;
     }
 
     SpecijalnaKarticka(char* smetka, int pin) : Karticka(smetka, pin) {
         this->povekjePin = true;
-        this->pinovi = new int[0];
+        this->pinovi = nullptr;
         this->pinovi_n = 0;
     }
 
@@ -99,7 +107,9 @@ public:
     }
 
     SpecijalnaKarticka& operator=(const SpecijalnaKarticka& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         Karticka::operator=(other);
         delete [] pinovi;
         copy_special(other);
@@ -107,16 +117,23 @@ public:
     }
 
     SpecijalnaKarticka& operator+=(int pin) {
-        if(pinovi_n >= MAX_PINOVI) throw OutOfBoundsException();
+        if(pinovi_n >= MAX_PINOVI) {
+            throw OutOfBoundsException();
+        }
 
         int* tmp = new int[pinovi_n + 1];
-        for(int i = 0; i < pinovi_n; i++) tmp[i] = this->pinovi[i];
+        for(int i = 0; i < pinovi_n; i++) {
+            tmp[i] = this->pinovi[i];
+        }
         tmp[pinovi_n++] = pin;
 
         delete [] pinovi;
         this->pinovi = new int[pinovi_n];
-        for(int i = 0; i < pinovi_n; i++) this->pinovi[i] = tmp[i];
+        for(int i = 0; i < pinovi_n; i++) {
+            this->pinovi[i] = tmp[i];
+        }
         delete [] tmp;
+        return *this;
     }
 
     int tezinaProbivanje() {
@@ -136,23 +153,25 @@ private:
     static int LIMIT;
 public:
     Banka() {
-        strcpy(this->naziv, "a");
+        strcpy(this->naziv, "banka");
         this->broj = 0;
     }
 
-    Banka(char *naziv, Karticka** karticki,int broj ){
-        strcpy(this->naziv,naziv);
-        for (int i=0;i<broj;i++){
-            //ako kartickata ima dopolnitelni pin kodovi
+    Banka(char* naziv, Karticka** karticki, int broj) {
+        strcpy(this->naziv, naziv);
+        for (int i = 0; i < broj; i++){
             if (karticki[i]->getDopolnitelenPin()){
-                this->karticki[i]=new SpecijalnaKarticka(*dynamic_cast<SpecijalnaKarticka*>(karticki[i]));
+                this->karticki[i] = new SpecijalnaKarticka(*dynamic_cast<SpecijalnaKarticka*>(karticki[i]));
+            } else {
+                this->karticki[i] = new Karticka(*karticki[i]);
             }
-            else this->karticki[i]=new Karticka(*karticki[i]);
         }
-        this->broj=broj;
+        this->broj = broj;
     }
 
-    static void setLIMIT(int _limit) { LIMIT = _limit; }
+    static void setLIMIT(int _limit) {
+        LIMIT = _limit;
+    }
 
     void dodadiDopolnitelenPin(char* smetka, int pin) {
         for(int i = 0; i < broj; i++) {
@@ -164,11 +183,17 @@ public:
 
     void pecatiKarticki() {
         cout << "Vo bankata " << naziv << " moze da se probijat kartickite:\n";
-        for(int i = 0; i < broj; i++) if(this->karticki[i]->tezinaProbivanje() <= LIMIT) cout << *karticki[i];
+        for(int i = 0; i < broj; i++) {
+            if(this->karticki[i]->tezinaProbivanje() <= LIMIT) {
+                cout << *karticki[i];
+            }
+        }
     }
 
-    ~Banka(){
-        for (int i=0;i<broj;i++) delete karticki[i];
+    ~Banka() {
+        for (int i = 0; i < broj; i++) {
+            delete karticki[i];
+        }
     }
 };
 
@@ -201,7 +226,7 @@ int main(){
 
         try { komercijalna.dodadiDopolnitelenPin(smetka,pin); }
         catch(OutOfBoundsException& e) { e.message(); }
-    
+
     }
 
     Banka::setLIMIT(5);

@@ -5,7 +5,10 @@
 using namespace std;
 
 class BadInputException {
-public: static void message() { cout << "Greshna opisna ocenka\n"; }
+public:
+    static void message() {
+        cout << "Greshna opisna ocenka\n";
+    }
 };
 
 class StudentKurs{
@@ -34,7 +37,9 @@ public:
     }
 
     StudentKurs& operator=(const StudentKurs& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         copy_kurs(other);
         return *this;
     }
@@ -44,27 +49,32 @@ public:
         return out;
     }
 
-    static void setMAX(int val) { MAX = val; }
+    static void setMAX(int val) {
+        MAX = val;
+    }
 
-    char* getIme() { return ime; }
-    void setIme(char* ime) { strcpy(this->ime, ime); }
+    char* getIme() {
+        return ime;
+    }
 
-    virtual int getOcenka() { return ocenka; }
-    void setOcenka(int ocenka) { this->ocenka = ocenka; }
+    virtual int getOcenka() {
+        return ocenka;
+    }
 
-    bool getDaliUsno() { return daliUsno; }
-    void setDaliUsno(bool daliUsno) { this->daliUsno = daliUsno; }
+    bool getDaliUsno() {
+        return daliUsno;
+    }
 
     ~StudentKurs() { }
 };
 
-//вметни го кодот за StudentKursUsno
 class StudentKursUsno : public StudentKurs {
     char* opisna_ocenka;
 
 public:
     StudentKursUsno(char* ime, int ocenka) : StudentKurs(ime, ocenka) {
         this->opisna_ocenka = new char[10];
+        strcpy(this->opisna_ocenka, "opisna");
         this->daliUsno = true;
     }
 
@@ -76,9 +86,10 @@ public:
 
     StudentKurs& operator+=(char* oc) {
         for(int i = 0; i < strlen(oc); i++) {
-            if(!isalpha(oc[i])) throw BadInputException();
+            if(!isalpha(oc[i])) {
+                throw BadInputException();
+            }
         }
-
         delete [] opisna_ocenka;
         this->opisna_ocenka = new char[10];
         strcpy(this->opisna_ocenka, oc);
@@ -88,10 +99,15 @@ public:
     int getOcenka() {
         int kursOcena = StudentKurs::getOcenka(), add = 0;
 
-        if(!strcmp(opisna_ocenka, "odlicen")) add = 2;
-        else if(!strcmp(opisna_ocenka, "dobro")) add = 1;
-        else if(!strcmp(opisna_ocenka, "losho")) add = -1;
-        else return kursOcena;
+        if(!strcmp(opisna_ocenka, "odlicen")) {
+            add = 2;
+        } else if(!strcmp(opisna_ocenka, "dobro")) {
+            add = 1;
+        } else if(!strcmp(opisna_ocenka, "losho")) {
+            add = -1;
+        } else {
+            return kursOcena;
+        }
 
         return kursOcena + add < MAX ? kursOcena + add : MAX;
     }
@@ -109,33 +125,38 @@ private:
     const static int MINOCENKA = 6;
 
 public:
-    KursFakultet(char *naziv, StudentKurs** studenti,int broj ){
-        strcpy(this->naziv,naziv);
-        for (int i=0;i<broj;i++){
-            //ako studentot ima usno isprashuvanje
-            if (studenti[i]->getDaliUsno()){
-                this->studenti[i]=new StudentKursUsno(*dynamic_cast<StudentKursUsno*>(studenti[i]));
+    KursFakultet(char* naziv, StudentKurs** studenti, int broj) {
+        strcpy(this->naziv, naziv);
+        for(int i = 0; i < broj; i++){
+            if(studenti[i]->getDaliUsno()) {
+                this->studenti[i] = new StudentKursUsno(*dynamic_cast<StudentKursUsno*>(studenti[i]));
+            } else {
+                this->studenti[i] = new StudentKurs(*studenti[i]);
             }
-            else this->studenti[i]=new StudentKurs(*studenti[i]);
         }
-        this->broj=broj;
-    }
-
-    ~KursFakultet(){
-        for (int i=0;i<broj;i++) delete studenti[i];
+        this->broj = broj;
     }
 
     void pecatiStudenti() {
         cout << "Kursot " << naziv << " go polozile:\n";
         for(int i = 0; i < broj; i++) {
-            if(studenti[i]->getOcenka() >= MINOCENKA) cout << *studenti[i];
+            if(studenti[i]->getOcenka() >= MINOCENKA) {
+                cout << *studenti[i];
+            }
         }
     }
 
     void postaviOpisnaOcenka(char *ime, char *opisnaOcenka) {
         for(int i = 0; i < broj; i++) {
-            if(studenti[i]->getDaliUsno() && !strcmp(ime, studenti[i]->getIme()))
+            if(studenti[i]->getDaliUsno() && !strcmp(ime, studenti[i]->getIme())) {
                 *dynamic_cast<StudentKursUsno*>(studenti[i]) += opisnaOcenka;
+            }
+        }
+    }
+
+    ~KursFakultet(){
+        for(int i = 0; i < broj; i++) {
+            delete studenti[i];
         }
     }
 };

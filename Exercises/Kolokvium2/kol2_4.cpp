@@ -1,3 +1,5 @@
+// 2 - 4
+
 #include <iostream>
 #include <cstring>
 using namespace std;
@@ -8,26 +10,26 @@ char SizeText[3][8] = { "small", "large", "family" };
 class Pizza {
 protected:
     char name[20];
-    char ingredients[50];
+    char ingredients[100];
     float basePrice;
 
+public:
     void copy_pizza(const Pizza& other) {
         strcpy(this->name, other.name);
         strcpy(this->ingredients, other.ingredients);
-        this->ingredients[49] = '\0';
         this->basePrice = other.basePrice;
     }
+
 public:
     Pizza() {
-        strcpy(this->name, " ");
-        strcpy(this->ingredients, " ");
-        this->basePrice = 0.0;
+        strcpy(this->name, "pizza");
+        strcpy(this->ingredients, "ingredients");
+        this->basePrice = 0;
     }
 
     Pizza(char* name, char* ingredients, float basePrice) {
         strcpy(this->name, name);
         strcpy(this->ingredients, ingredients);
-        this->ingredients[49] = '\0';
         this->basePrice = basePrice;
     }
 
@@ -36,22 +38,27 @@ public:
     }
 
     Pizza& operator=(const Pizza& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         copy_pizza(other);
         return *this;
     }
 
     friend ostream& operator<<(ostream& out, Pizza& p);
 
-    bool operator<(Pizza &p) { return price() < p.price(); }
+    bool operator<(Pizza &p) {
+        return price() < p.price();
+    }
 
-    virtual float price() { return basePrice; }
+    virtual float price() {
+        return basePrice;
+    }
 
     ~Pizza() { }
 };
 
 class FlatPizza : public Pizza {
-protected:
     Size size;
 
 public:
@@ -68,7 +75,9 @@ public:
     }
 
     FlatPizza& operator=(const FlatPizza& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         Pizza::operator=(other);
         this->size = other.size;
         return *this;
@@ -87,7 +96,9 @@ public:
         return basePrice;
     }
 
-    char* getSize() { return SizeText[size]; }
+    char* getSize() {
+        return SizeText[size];
+    }
 
     ~FlatPizza() { }
 };
@@ -109,14 +120,21 @@ public:
     }
 
     FoldedPizza& operator=(const FoldedPizza& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         Pizza::operator=(other);
         this->whiteFlour = other.whiteFlour;
         return *this;
     }
 
-    void setWhiteFlour(bool _whiteFlour) { this->whiteFlour = _whiteFlour; }
-    bool getWhiteFlour() { return whiteFlour; }
+    void setWhiteFlour(bool _whiteFlour) {
+        this->whiteFlour = _whiteFlour;
+    }
+
+    bool getWhiteFlour() {
+        return whiteFlour;
+    }
 
     float price() { return basePrice * (whiteFlour ? 1.1 : 1.3); }
 
@@ -129,20 +147,24 @@ ostream& operator<<(ostream& out, Pizza& p) {
     if(dynamic_cast<FlatPizza*>(&p)) {
         out << dynamic_cast<FlatPizza*>(&p)->getSize();
     } else if(dynamic_cast<FoldedPizza*>(&p)) {
-        if(dynamic_cast<FoldedPizza*>(&p)->getWhiteFlour()) out << "wf";
-        else out << "nwf";
+        out << (dynamic_cast<FoldedPizza*>(&p)->getWhiteFlour() ? "wf" : "nwf");
     }
 
     out << " - " << p.price() << "\n";
-
     return out;
 }
 
 void expensivePizza(Pizza** pi, int n) {
-    int idx = 0;
+    int idx = -1;
 
     for(int i = 0; i < n; i++) {
-        if(pi[i]->price() > pi[idx]->price()) idx = i;
+        if(idx == -1 || pi[i]->price() > pi[idx]->price()) {
+            idx = i;
+        }
+    }
+
+    if(idx == -1) {
+        return;
     }
 
     cout << *pi[idx];

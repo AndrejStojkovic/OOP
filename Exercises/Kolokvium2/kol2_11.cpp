@@ -32,7 +32,9 @@ public:
     }
 
     Delo& operator=(const Delo& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         copy_delo(other);
         return *this;
     }
@@ -41,14 +43,17 @@ public:
         return !strcmp(name, other.name);
     }
 
-    char* getIme() { return name; }
-    void setName(char* name) { strcpy(this->name, name); }
+    char* getIme() {
+        return name;
+    }
 
-    int getYear() { return year; }
-    void setYear(int year) { this->year = year; }
+    int getYear() {
+        return year;
+    }
 
-    char* getCountry() { return country; }
-    void setCountry(char* country) { strcpy(this->country, country); }
+    char* getCountry() {
+        return country;
+    }
 
     ~Delo() { }
 };
@@ -68,7 +73,8 @@ public:
     Pretstava() {
         this->d = Delo();
         this->n = 0;
-        this->date = new char[0];
+        this->date = new char[5];
+        strcpy(this->date, "date");
     }
 
     Pretstava(Delo d, int n, char* date) {
@@ -83,32 +89,25 @@ public:
     }
 
     Pretstava& operator=(const Pretstava& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         delete [] date;
         copy_pretstava(other);
         return *this;
     }
 
-    Delo getDelo() { return d; }
-    void setDelo(Delo d) { this->d = d; }
+    Delo getDelo() {
+        return d;
+    }
 
-    int getN() { return n; }
-    void setN(int n) { this->n = n; }
-
-    char* getDate() { return date; }
-    void setDate(char* date) { this->date = new char[strlen(date) + 1]; strcpy(this->date, date); }
+    int getN() {
+        return n;
+    }
 
     virtual int cena() {
-        int n = 0, m = 0;
-
-        if(d.getYear() > 1900) n = 50;
-        else if(d.getYear() > 1800) n = 75;
-        else n = 100;
-
-        if(!strcmp(d.getCountry(), "Italija")) m = 100;
-        else if(!strcmp(d.getCountry(), "Rusija")) m = 150;
-        else m = 80;
-
+        int n = d.getYear() > 1900 ? 50 : d.getYear() > 1800 ? 75 : 100;
+        int m = !strcmp(d.getCountry(), "Italija") ? 100 : !strcmp(d.getCountry(), "Rusija") ? 150 : 80;
         return n + m;
     }
 
@@ -125,9 +124,13 @@ public:
 
     Balet(Delo d, int tickets, char* date) : Pretstava(d, tickets, date) { }
 
-    int cena() { return Pretstava::cena() + b_price; }
+    int cena() {
+        return Pretstava::cena() + b_price;
+    }
 
-    static void setCenaBalet(int _price) { b_price = _price; }
+    static void setCenaBalet(int _price) {
+        b_price = _price;
+    }
 
     ~Balet() { }
 };
@@ -145,13 +148,19 @@ int Balet::b_price = 150;
 
 int prihod(Pretstava** p, int n) {
     int s = 0;
-    for(int i = 0; i < n; i++) s += p[i]->cena() * p[i]->getN();
+    for(int i = 0; i < n; i++) {
+        s += p[i]->cena() * p[i]->getN();
+    }
     return s;
 }
 
 int brojPretstaviNaDelo(Pretstava** p, int n, Delo d) {
     int s = 0;
-    for(int i = 0; i < n; i++) if(p[i]->getDelo() == d) s++;
+    for(int i = 0; i < n; i++) {
+        if(p[i]->getDelo() == d) {
+            s++;
+        }
+    }
     return s;
 }
 

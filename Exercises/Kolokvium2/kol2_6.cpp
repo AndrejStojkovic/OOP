@@ -5,7 +5,10 @@
 using namespace std;
 
 class ExistingGame {
-public: void message() { cout << "The game is already in the collection\n"; }
+public:
+    void message() {
+        cout << "The game is already in the collection\n";
+    }
 };
 
 class Game {
@@ -39,7 +42,9 @@ public:
     }
 
     Game& operator=(const Game& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         copy(other);
         return *this;
     }
@@ -49,9 +54,10 @@ public:
     }
 
     friend ostream& operator<<(ostream& out, Game& g) {
-        // Game: Name, regular price: $price(, bought on sale)
         out << "Game: " << g.name << ", regular price: $" << g.price;
-        if(g.sale) out << ", bought on sale";
+        if(g.sale) {
+            out << ", bought on sale";
+        }
         return out;
     }
 
@@ -66,15 +72,6 @@ public:
         return sale ? price * 0.3 : price;
     }
 
-    char* getName() { return name; }
-    void setName(char* name) { strcpy(this->name, name); }
-
-    float getPrice() { return price; }
-    void setPrice(float price) { this->price = price; }
-
-    bool onSale() { return sale; }
-    void setSale(bool sale) { this->sale = sale; }
-
     ~Game() { }
 };
 
@@ -85,7 +82,7 @@ class SubscriptionGame : public Game {
 
 public:
     SubscriptionGame() : Game() {
-        this->fee = 0.0;
+        this->fee = 0;
         this->year = this->month = 0;
     }
 
@@ -102,7 +99,9 @@ public:
     }
 
     SubscriptionGame& operator=(const SubscriptionGame& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         Game::operator=(other);
         this->fee = other.fee;
         this->month = other.month;
@@ -111,9 +110,7 @@ public:
     }
 
     friend ostream& operator<<(ostream& out, SubscriptionGame& g) {
-        // Game: World of Warcraft, regular price: $40, monthly fee: $10, purchased: 1-2017
-        out << *dynamic_cast<Game*>(&g);
-        out << ", monthly fee: $" << g.fee << ", purchased: " << g.month << "-" << g.year;
+        out << *dynamic_cast<Game*>(&g) << ", monthly fee: $" << g.fee << ", purchased: " << g.month << "-" << g.year;
         return out;
     }
 
@@ -143,7 +140,9 @@ class User {
         strcpy(this->name, other.name);
         this->n = other.n;
         this->games = new Game*[this->n];
-        for(int i = 0; i < this->n; i++) this->games[i] = new Game(*(other.games[i]));
+        for(int i = 0; i < this->n; i++) {
+            this->games[i] = new Game(*(other.games[i]));
+        }
     }
 
 public:
@@ -164,8 +163,12 @@ public:
     }
 
     User& operator=(const User& other) {
-        if(this == &other) return *this;
-        for(int i = 0; i < n; i++) delete this->games[i];
+        if(this == &other) {
+            return *this;
+        }
+        for(int i = 0; i < n; i++) {
+            delete this->games[i];
+        }
         delete [] games;
         copy(other);
         return *this;
@@ -173,16 +176,19 @@ public:
 
     User& operator+=(Game& game) {
         for(int i = 0; i < this->n; i++) {
-            if(*games[i] == game) throw ExistingGame();
+            if(*games[i] == game) {
+                throw ExistingGame();
+            }
         }
 
         Game** tmp = new Game*[n + 1];
-        for(int i = 0; i < this->n; i++) tmp[i] = games[i];
+        for(int i = 0; i < this->n; i++) {
+            tmp[i] = games[i];
+        }
 
         SubscriptionGame* s_game = dynamic_cast< SubscriptionGame* >(&game);
 
-        if(s_game) tmp[n] = new SubscriptionGame(*s_game);
-        else tmp[n] = new Game(game);
+        tmp[n] = s_game ? new SubscriptionGame(*s_game) : new Game(game);
 
         delete [] this->games;
         this->games = tmp;
@@ -196,29 +202,29 @@ public:
         for(int i = 0; i < user.n; i++) {
             SubscriptionGame* s_game = dynamic_cast<SubscriptionGame*>(user.games[i]);
             out << "- ";
-            if(s_game) out << *s_game;
-            else out << *user.games[i];
+            if(s_game) {
+                out << *s_game;
+            } else {
+                out << *user.games[i];
+            }
             out << "\n";
         }
         out << "\n";
         return out;
     }
 
-    Game& get_game(int i){
-        return *games[i];
-    }
-
     float total_spent(){
-        float s = 0.0;
-        for (int i = 0; i < this->n; i++) s += games[i]->get_price();
+        float s = 0;
+        for (int i = 0; i < this->n; i++) {
+            s += games[i]->get_price();
+        }
         return s;
     }
 
-    char* get_name() { return name; }
-    int get_games_number() { return n; }
-
     ~User() {
-        for(int i = 0; i < n; i++) delete this->games[i];
+        for(int i = 0; i < n; i++) {
+            delete this->games[i];
+        }
         delete [] games;
     }
 };

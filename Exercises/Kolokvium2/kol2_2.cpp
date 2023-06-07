@@ -36,7 +36,9 @@ public:
     }
 
     Vozac& operator=(const Vozac& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         copy_vozac(other);
         return *this;
     }
@@ -47,11 +49,14 @@ public:
 
     friend ostream& operator<<(ostream& out, const Vozac& v) {
         out << v.name << "\n" << v.age << "\n" << v.races << "\n";
-        if(v.vet) out << "VETERAN\n";
+        if(v.vet) {
+            out << "VETERAN\n";
+        }
         return out;
     }
 
     virtual float zarabotuvacka() = 0;
+
     virtual float danok() = 0;
 
     ~Vozac() { }
@@ -59,7 +64,6 @@ public:
 
 class Avtomobilist : public Vozac {
     float price;
-    float zarabotuvachka() { return this->price / 5.0; }
 
 public:
     Avtomobilist() : Vozac() {
@@ -85,8 +89,13 @@ public:
         return zarabotuvacka() == other.zarabotuvacka();
     }
 
-    float zarabotuvacka() { return this->price / 5.0; }
-    float danok() { return races > 10 ? zarabotuvacka() * 0.15 : zarabotuvacka() * 0.1; }
+    float zarabotuvacka() {
+        return this->price / 5.0;
+    }
+
+    float danok() {
+        return races > 10 ? zarabotuvacka() * 0.15 : zarabotuvacka() * 0.1;
+    }
 
     ~Avtomobilist() { }
 };
@@ -108,7 +117,9 @@ public:
     }
 
     Motociklist& operator=(const Motociklist& other) {
-        if(this == &other) return *this;
+        if(this == &other) {
+            return *this;
+        }
         Vozac::operator=(other);
         this->power = other.power;
         return *this;
@@ -118,15 +129,22 @@ public:
         return zarabotuvacka() == other.zarabotuvacka();
     }
 
-    float zarabotuvacka() { return this->power * 20; }
-    float danok() { return vet ? zarabotuvacka() * 0.25 : zarabotuvacka() * 0.2; }
+    float zarabotuvacka() {
+        return this->power * 20;
+    }
+
+    float danok() {
+        return vet ? zarabotuvacka() * 0.25 : zarabotuvacka() * 0.2;
+    }
 
     ~Motociklist() { }
 };
 
 int soIstaZarabotuvachka(Vozac** arr, int n, Vozac* v) {
     int ct = 0;
-    for(int i = 0; i < n; i++) ct += arr[i]->zarabotuvacka() == v->zarabotuvacka() ? 1 : 0;
+    for(int i = 0; i < n; i++) {
+        ct += arr[i]->zarabotuvacka() == v->zarabotuvacka() ? 1 : 0;
+    }
     return ct;
 }
 
